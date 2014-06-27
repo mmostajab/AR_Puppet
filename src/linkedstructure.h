@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "color.h"
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 
 using namespace Eigen;
 

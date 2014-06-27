@@ -14,7 +14,7 @@
 #include <iomanip>
 #include "linkedstructure.h"
 #include "link.h"
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 
 using namespace Eigen;
 using namespace std;
