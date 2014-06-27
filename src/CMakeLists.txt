@@ -1,6 +1,6 @@
-set(CMAKE_RELEASE_DIR "../build/release")
+set(CMAKE_RELEASE_DIR "../bin/release")
 # debug binary folder
-set(CMAKE_DEBUG_DIR "../build/debug")
+set(CMAKE_DEBUG_DIR "../bin/debug")
 
 
 # find openCV

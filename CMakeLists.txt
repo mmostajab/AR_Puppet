@@ -9,7 +9,7 @@ project(ARPuppet)
 set(CMAKE_BUILD_TYPE "Debug")
 
 # set c++ compiler flags -on warning and using of new c++ strandard library ISO 2011 (-std=c++0x)
-set(CMAKE_CXX_FLAGS "-Wall ")
+set(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated")
 
 # message for set the compiler and its flags and type of build(release)
 message ("user define: CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
