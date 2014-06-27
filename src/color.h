@@ -4,9 +4,16 @@
 #ifdef WIN32
 #define NOMINMAX
 #include <Windows.h>
+
+// for Mac OS
+#elif __APPLE__
+#include <OpenGL/gl.h>
+
+#else
+#include <GL/gl.h>
 #endif
 
-#include <GL/gl.h>
+
 
 /*! \file color.h
  *  \class Color

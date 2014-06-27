@@ -4,6 +4,8 @@ SET(CMAKE_BUILD_TYPE "Debug")
 
 PROJECT(inversekinematics)
 
+SET(CMAKE_CXX_FLAGS "-Wall -Wno-deprecated")
+
 FIND_PACKAGE(GLUT)
 FIND_PACKAGE(OpenGL)
 
