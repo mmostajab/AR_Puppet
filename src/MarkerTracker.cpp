@@ -77,7 +77,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
 
     cv::cvtColor(adaptiveThresholdFrame, adaptiveThresholdFrame, CV_BGR2GRAY);
 
-    cv::imshow("Capture Video With Adaptive Threshold", frame);
+    // cv::imshow("Capture Video With Adaptive Threshold", frame);
     // apply binary adaptive threshold on adaptiveThresholdFrame with MEAN method
     cv::adaptiveThreshold(adaptiveThresholdFrame, adaptiveThresholdFrame, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, blockSize, C);
     // find contours
@@ -225,29 +225,52 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
         targetCorners[3].x = -0.5; targetCorners[3].y =  5.5;
 
         cv::Mat projectMatrix = cv::getPerspectiveTransform(corners, targetCorners);
-        cv::Size markerSize (6, 6);
-        cv::Mat markerImage (markerSize, CV_8U);
+        cv::Mat iplMarker( cv::Size(6, 6), CV_8UC1 );
 
-        cv::warpPerspective(frame, markerImage, projectMatrix, markerSize);
+        cv::warpPerspective(frame, iplMarker, projectMatrix, cv::Size(6, 6));
 
         int value = 100;
         // set the trackbar by defult value =50
         // cv::createTrackbar( "Threshold", "Capture Video With Threshold", &value, 255,  NULL);
         // apply binary threshold on thresholdFrame
-        cv::threshold(markerImage, markerImage, value, 255, cv::THRESH_BINARY);
+        cv::threshold(iplMarker, iplMarker, value, 255, cv::THRESH_BINARY);
 
+        // check if border is black
         int code = 0;
-        int angle;
-        int markerPoints[4][4];
-        for (int j = 0; j < 4; j++)
-            for (int k = 0; k < 4; k++)
+        for (int i = 0; i < 6; ++i)
+        {
+            //int pixel1 = ((unsigned char*)(iplMarker->imageData + 0*iplMarker->widthStep + i))[0]; //top
+            //int pixel2 = ((unsigned char*)(iplMarker->imageData + 5*iplMarker->widthStep + i))[0]; //bottom
+            //int pixel3 = ((unsigned char*)(iplMarker->imageData + i*iplMarker->widthStep))[0]; //left
+            //int pixel4 = ((unsigned char*)(iplMarker->imageData + i*iplMarker->widthStep + 5))[0]; //right
+            int pixel1 = iplMarker.at<uchar>(0, i);
+            int pixel2 = iplMarker.at<uchar>(5, i);
+            int pixel3 = iplMarker.at<uchar>(i, 0);
+            int pixel4 = iplMarker.at<uchar>(i, 5);
+            if ( ( pixel1 > 0 ) || ( pixel2 > 0 ) || ( pixel3 > 0 ) || ( pixel4 > 0 ) )
             {
-                if (markerImage.at<int> (j + 1, k + 1) == 0)
-                    markerPoints[j][k] = 1;
-                else
-                    markerPoints[j][k] = 0;
+                code = -1;
+                break;
             }
+        }
 
+        if ( code < 0 )
+        {
+            continue;
+        }
+
+        //copy the BW values into cP
+        int cP[4][4];
+        for ( int i = 0; i < 4; ++i)
+        {
+            for ( int j = 0; j < 4; ++j)
+            {
+                cP[i][j] = iplMarker.at<uchar>(i + 1, j + 1);
+                cP[i][j] = (cP[i][j] == 0) ? 1 : 0; //if black then 1 else 0
+            }
+        }
+
+        //save the ID of the marker
         int codes[4];
         codes[0] = codes[1] = codes[2] = codes[3] = 0;
         for (int i = 0; i < 16; i++)
@@ -256,23 +279,26 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
             int col = i % 4;
 
             codes[0] <<= 1;
-            codes[0] |= markerPoints[row][col];
+            codes[0] |= cP[row][col]; // 0°
 
             codes[1] <<= 1;
-            codes[1] |= markerPoints[3 - col][row];
+            codes[1] |= cP[3 - col][row]; // 90°
 
             codes[2] <<= 1;
-            codes[2] |= markerPoints[3 - row][3 - col];
+            codes[2] |= cP[3 - row][3 - col]; // 180°
 
             codes[3] <<= 1;
-            codes[3] |= markerPoints[col][3 - row];
+            codes[3] |= cP[col][3 - row]; // 270°
         }
 
         if ( (codes[0] == 0) || (codes[0] == 0xffff) )
+        {
             continue;
+        }
 
         //account for symmetry
         code = codes[0];
+        int angle = 0;
         for ( int i = 1; i < 4; ++i )
         {
             if ( codes[i] < code )
@@ -282,21 +308,12 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
             }
         }
 
-        if (angle != 0)
-        {
-            std::vector <cv::Point2f> corrected_corners(4);
-            for (int j = 0; j < 4; j++)
-                corrected_corners[(j + angle) % 4] = corners[j];
-            for (int j = 0; j < 4; j++)
-                corners[j] = corrected_corners[j];
-        }
-
         printf ("Found: %04x\n", code);
 
         for (int j = 0; j < 4; j++)
         {
-            corners[j].x -= frame.cols*0.5;//here you have to use your own camera resolution (x) * 0.5
-            corners[j].y = -corners[i].y + frame.rows*0.5; //here you have to use your own camera resolution (y) * 0.5
+            corners[j].x -= frame.cols * 0.5; //here you have to use your own camera resolution (x) * 0.5
+            corners[j].y = -corners[i].y + frame.rows * 0.5; //here you have to use your own camera resolution (y) * 0.5
         }
 
         Marker marker;
@@ -311,6 +328,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
         // Added in Exercise 9 - End *****************************************************************
 
         //this part is only for printing
+        /*
         for (int i = 0; i < 4; ++i)
         {
             for (int j = 0; j < 4; ++j)
@@ -328,11 +346,12 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
         z = marker.resultMatrix[11];
         std::cout << "length: " << sqrt(x * x + y * y + z * z) << "\n";
         std::cout << "\n";
+        */
     } // end of loop over contours
 
     cv::imshow(kWinName1, frame);
     // cv::imshow(kWinName2, img_mono);
 
-	if (cv::waitKey(10) == 27) 
-		exit(0);
+    if (cv::waitKey(10) == 27)
+        exit(0);
 }

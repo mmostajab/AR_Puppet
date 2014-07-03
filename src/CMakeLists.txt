@@ -9,8 +9,9 @@ find_package(OpenCV REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(GLFW3 REQUIRED)
 
-include_directories(${EIGEN3_INCLUDE_DIR})
+include_directories(${EIGEN3_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS})
 add_executable (inversekinematics
   PoseEstimation.cpp
   linkedstructure.cpp
@@ -18,7 +19,8 @@ add_executable (inversekinematics
   MarkerTracker.cpp
   link.h
   glfunctions.h)
-target_link_libraries (inversekinematics ${OpenCV_LIBS} ${GLUT_LIBRARY} ${OPENGL_LIBRARY})
+
+target_link_libraries (inversekinematics ${OpenCV_LIBS} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES})
 # ${PCL_LIBRARIES} ${OpenCV_LIBS} ${cvsba_LIBS})
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
