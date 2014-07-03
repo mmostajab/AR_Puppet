@@ -42,7 +42,7 @@ void MarkerTracker::init()
     cv::namedWindow(kWinName1, CV_WINDOW_AUTOSIZE);
     // cv::namedWindow(kWinName2, CV_WINDOW_AUTOSIZE);
     // cv::namedWindow(kWinName3, CV_WINDOW_AUTOSIZE);
-    cv::namedWindow(kWinName4, 0 );
+    // cv::namedWindow(kWinName4, 0 );
     cvResizeWindow("Marker", 120, 120 );
 
     // int max = 255;
@@ -62,7 +62,7 @@ void MarkerTracker::cleanup()
     cv::destroyWindow (kWinName1);
     // cv::destroyWindow (kWinName2);
     // cv::destroyWindow (kWinName3);
-    cv::destroyWindow (kWinName4);
+    // cv::destroyWindow (kWinName4);
     std::cout << "Finished\n";
 }
 
@@ -104,11 +104,11 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
 
     for ( size_t i = 0; i < selectedPoly.size(); i++ )
     {
-        cv::polylines(frame, selectedPoly[i], true, redPen, 2);
+        // cv::polylines(frame, selectedPoly[i], true, redPen, 2);
         cv::Vec4f line[4];
         for (size_t j = 0; j < sizeOfPoly; j++)
         {
-            cv::circle(frame, selectedPoly[i][j], 3, greenPen, -1);
+            // cv::circle(frame, selectedPoly[i][j], 3, greenPen, -1);
             double dx = (selectedPoly[i][(j + 1) % 4].x - selectedPoly[i][j].x) / 7.0;
             double dy = (selectedPoly[i][(j + 1) % 4].y - selectedPoly[i][j].y) / 7.0;
 
@@ -141,7 +141,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
                 double py = selectedPoly[i][j].y + k * dy;
 
                 cv::Point2f drawPoint (px, py);
-                cv::circle(frame, drawPoint, 2, bluePen, -1);
+                // cv::circle(frame, drawPoint, 2, bluePen, -1);
 
                 int widthRange = static_cast<int> (stripeSize.width / 2);
                 int heigthRange = static_cast<int> (stripeSize.height / 2);
@@ -171,7 +171,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
             p2.x = line[j][2] + (50.0f * line[j][0]);
             p2.y = line[j][3] + (50.0f * line[j][1]);
 
-            cv::line(frame, p1, p2, cyan, 1, 8, 0);
+            // cv::line(frame, p1, p2, cyan, 1, 8, 0);
 
         }
 
@@ -207,7 +207,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
 
             corners[j].x = a;
             corners[j].y = b;
-            cv::circle(frame, corners[j], 5, yellow, -1);
+            // cv::circle(frame, corners[j], 3, greenPen, -1);
         }
 
         cv::Point2f targetCorners[4];
@@ -230,7 +230,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
         // cv::createTrackbar( "Threshold", "Capture Video With Threshold", &value, 255,  NULL);
         // apply binary threshold on thresholdFrame
         cv::threshold(markerImage, markerImage, value, 255, cv::THRESH_BINARY);
-        imshow(kWinName4, markerImage);
+        // imshow(kWinName4, markerImage);
 
         int code = 0;
         int angle;
@@ -268,12 +268,12 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
             }
         }
 
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-                std::cout << markerPoints[i][j] << " ";
-            std::cout << std::endl;
-        }
+        // for (int i = 0; i < 4; i++)
+        // {
+        //     for (int j = 0; j < 4; j++)
+        //         std::cout << markerPoints[i][j] << " ";
+        //     std::cout << std::endl;
+        // }
 
         int codes[4];
         codes[0] = codes[1] = codes[2] = codes[3] = 0;
@@ -318,6 +318,15 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
                 corners[j] = corrected_corners[j];
         }
 
+
+        for(int i=0 ; i< sizeOfPoly; i++)
+        {
+            int nextIndex = (i + 1) % 4;
+            cv::circle(frame, corners[i], 5, yellow, -1);
+            cv::line(frame, corners[i], corners[nextIndex], redPen, 3, 8, 0);
+
+        }
+
         printf ("Found: %04x\n", code);
 
         for (int j = 0; j < 4; j++)
@@ -338,23 +347,23 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
         // Added in Exercise 9 - End *****************************************************************
 
         //this part is only for printing
-        for (int i = 0; i < 4; ++i)
-        {
-            for (int j = 0; j < 4; ++j)
-            {
-                std::cout << std::setw(6);
-                std::cout << std::setprecision(4);
-                std::cout << marker.resultMatrix[4 * i + j] << " ";
-            }
-            std::cout << "\n";
-        }
-        std::cout << "\n";
-        float x, y, z;
-        x = marker.resultMatrix[3];
-        y = marker.resultMatrix[7];
-        z = marker.resultMatrix[11];
-        std::cout << "length: " << sqrt(x * x + y * y + z * z) << "\n";
-        std::cout << "\n";
+        // for (int i = 0; i < 4; ++i)
+        // {
+        //     for (int j = 0; j < 4; ++j)
+        //     {
+        //         std::cout << std::setw(6);
+        //         std::cout << std::setprecision(4);
+        //         std::cout << marker.resultMatrix[4 * i + j] << " ";
+        //     }
+        //     std::cout << "\n";
+        // }
+        // std::cout << "\n";
+        // float x, y, z;
+        // x = marker.resultMatrix[3];
+        // y = marker.resultMatrix[7];
+        // z = marker.resultMatrix[11];
+        // std::cout << "length: " << sqrt(x * x + y * y + z * z) << "\n";
+        // std::cout << "\n";
     } // end of loop over contours
 
     cv::imshow(kWinName1, frame);
