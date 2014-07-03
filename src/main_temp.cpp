@@ -1,17 +1,12 @@
 #include <opencv2/opencv.hpp>
 #include <iomanip>
-#include "PoseEstimation.h"
 
-int subpixSamplepix (cv::Mat &frame, cv::Point2f subPixle)
-{
-    int fx = std::floor(subPixle.x);
-    int fy = std::floor(subPixle.y);
-    double px = subPixle.x - fx;
-    double py = subPixle.y - fy;
-    int pixelValue = (1 - py) * (1 - px) * frame.at<float>(fx, fy) + (1 - py) * px * frame.at<float>(fx + 1, fy)
-                     + py * (1 - px) * frame.at<float>(fx, fy + 1) + py * px * frame.at<float>(fx + 1, fy + 1);
-    return (pixelValue);
-}
+#include "glfunctions.h"
+
+using namespace Eigen;
+using namespace std;
+
+#include "PoseEstimation.h"
 
 
 bool grabVideo( cv::VideoCapture &capture, int blockSize = 35, double C = 9 )
@@ -269,7 +264,7 @@ bool grabVideo( cv::VideoCapture &capture, int blockSize = 35, double C = 9 )
             //
 
 
-            estimateSquarePose( resultMatrix, corners_old_C_API, 0.045 );
+            estimateSquarePose( resultMatrix, corners_old_C_API, 0.025f );
 
             cv::Mat R = (cv::Mat_<float>(3, 3) << resultMatrix[0], resultMatrix[1], resultMatrix[2],
                          resultMatrix[4], resultMatrix[5], resultMatrix[6],
@@ -372,6 +367,89 @@ int main(int argc, char *argv[])
             printf("Capturing Video ended successfully...\n");
         }
     }
+
+    srand ( time(NULL) );
+
+    // Constructing the linked structure by
+    // adding links
+    for (int i = 1; i <= 2; i++)
+    {
+      Color c = {1.0f, 1.0f, 0.0f, 1.0f};
+        Link *leftHand = new Link(c);
+        leftHand->mAngle = -3.14f/8;
+        leftHand->mLength = 10;
+
+        ::leftHand.addLink(leftHand);
+    }
+
+    for (int i = 1; i <= 2; i++)
+    {
+      Color c = {1.0f, 0.0f, 1.0f, 1.0f};
+        Link *rightHand = new Link(c);
+        if(i == 1)
+            rightHand->mAngle = 3.14f-3.14f/4;
+        else
+            rightHand->mAngle = -3.14f/4;
+        rightHand->mLength = 10;
+
+        ::rightHand.addLink(rightHand);
+    }
+
+    leftFoot.setBasePosition(Vector2f(0, -20));
+    for (int i = 1; i <= 2; i++)
+    {
+      Color c = {0.0f, 0.0f, 1.0f, 1.0f};
+        Link *leftFoot = new Link(c);
+        leftFoot->mAngle = 3.14f/4;
+        leftFoot->mLength = 15;
+
+        ::leftFoot.addLink(leftFoot);
+    }
+
+    rightFoot.setBasePosition(Vector2f(0, -20));
+    for (int i = 1; i <= 2; i++)
+    {
+      Color c = {0.0f, 1.0f, 0.0f, 1.0f};
+        Link *rightFoot = new Link(c);
+        if(i == 1)
+            rightFoot->mAngle = 3.14f-3.14f/4;
+        else
+            rightFoot->mAngle = -3.14f/4;
+        rightFoot->mLength = 15;
+
+        ::rightFoot.addLink(rightFoot);
+    }
+
+    //targetPoint = leftHand.getPointWithinRange();
+    //leftHand.moveToPoint(targetPoint);
+
+    // GLUT initialization.
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    glutInitWindowSize(width, height);
+    glutCreateWindow("Biped - AR Project");
+
+    // Register call backs.
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshapeMainWindow);
+    glutKeyboardFunc(graphicKeys);
+    glutMotionFunc(mouseMovement);
+    glutIdleFunc(idle);
+    glutTimerFunc(30, timer, 0);
+
+    // OpenGL initialization
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_NORMALIZE);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+
+    GLfloat global_ambient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    glLightModelfv(GL_AMBIENT_AND_DIFFUSE, global_ambient);
+
+    // Enter GLUT loop.
+    glutMainLoop();
 
     return 0;
 }

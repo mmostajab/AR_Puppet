@@ -10,9 +10,14 @@ find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Eigen3 REQUIRED)
 
-
 include_directories(${EIGEN3_INCLUDE_DIR})
-add_executable (inversekinematics main.cpp linkedstructure)
+add_executable (inversekinematics
+  PoseEstimation.cpp
+  linkedstructure.cpp
+  main_temp.cpp
+  MarkerTracker.cpp
+  link.h
+  glfunctions.h)
 target_link_libraries (inversekinematics ${OpenCV_LIBS} ${GLUT_LIBRARY} ${OPENGL_LIBRARY})
 # ${PCL_LIBRARIES} ${OpenCV_LIBS} ${cvsba_LIBS})
 
