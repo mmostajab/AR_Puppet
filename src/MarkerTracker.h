@@ -8,12 +8,12 @@ struct Marker{
 	float resultMatrix[16];
 };
 
-class CvMemStorage;
+// class CvMemStorage;
 
-const std::string kWinName1 = "Exercise 8 - Original Image";
-const std::string kWinName2 = "Exercise 8 - Converted Image";
-const std::string kWinName3 = "Exercise 8 - Stripe Image";
-const std::string kWinName4 = "Exercise 8 - Marker";
+const std::string kWinName1 = "Puppet";
+// const std::string kWinName2 = "Exercise 8 - Converted Image";
+// const std::string kWinName3 = "Exercise 8 - Stripe Image";
+// const std::string kWinName4 = "Exercise 8 - Marker";
 
 class MarkerTracker{
 public:
@@ -34,7 +34,7 @@ public:
 	~MarkerTracker(){
 		cleanup();
 	}
-	void findMarker( cv::Mat &img_bgr, std::vector<Marker> &markers );
+	void findMarker( cv::Mat &img_bgr, std::vector<Marker> &markers, int blockSize = 35, double C = 9);
 //	void findMarker( cv::Mat &img_bgr, float resultMatrix[16] );
 protected:
 	void init( );
@@ -49,7 +49,7 @@ protected:
 	int thresh; // Threshold (gray to mono)
 	int bw_thresh; // threshold for (gray maker to ID image)
 
-	CvMemStorage* memStorage;
+	// CvMemStorage* memStorage;
 };
 
 #endif // MARKER_TRACKER_H
