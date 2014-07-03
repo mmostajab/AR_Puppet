@@ -522,13 +522,24 @@ void optimizePose( float* pRotation, float* pTranslation, int nPoints, const CvP
 	}
 
 
+
+void estimateSquarePose( float* result, const cv::Point2f* p2D_, float markerSize ){
+	CvPoint2D32f *p2D = new CvPoint2D32f[4];
+	for(size_t i=0;i<4;i++){
+		p2D[i].x = p2D_[i].x;
+		p2D[i].y = p2D_[i].y;
+	}
+	estimateSquarePose_( result, p2D, markerSize );
+	delete p2D;
+};
+
 /** 
  * @param mat result as 4x4 matrix in row-major format
  * @param p2D coordinates of the four corners in counter-clock-wise order. 
  *        the origin is assumed to be at the camera's center of projection
  * @param markerSize side-length of marker. Origin is at marker center.
  */
-void estimateSquarePose( float* mat, const CvPoint2D32f* p2D, float markerSize )
+void estimateSquarePose_( float* mat,  CvPoint2D32f* p2D, float markerSize )
 	{
 	// approximate focal length for logitech quickcam 4000 at 320*240 resolution
 	static const float fFocalLength = 400.0f;
@@ -558,30 +569,30 @@ void estimateSquarePose( float* mat, const CvPoint2D32f* p2D, float markerSize )
 	float W = rot[ 3 ];
 
 	float xx = X * X;
-    float xy = X * Y;
-    float xz = X * Z;
-    float xw = X * W;
-    float yy = Y * Y;
-    float yz = Y * Z;
-    float yw = Y * W;
-    float zz = Z * Z;
-    float zw = Z * W;
+	float xy = X * Y;
+	float xz = X * Z;
+	float xw = X * W;
+	float yy = Y * Y;
+	float yz = Y * Z;
+	float yw = Y * W;
+	float zz = Z * Z;
+	float zw = Z * W;
 
-    mat[0]  = 1 - 2 * ( yy + zz );
-    mat[1]  =     2 * ( xy + zw );
-    mat[2]  =     2 * ( xz - yw );
-    mat[4]  =     2 * ( xy - zw );
-    mat[5]  = 1 - 2 * ( xx + zz );
-    mat[6]  =     2 * ( yz + xw );
-    mat[8]  =     2 * ( xz + yw );
-    mat[9]  =     2 * ( yz - xw );
-    mat[10] = 1 - 2 * ( xx + yy );
+	mat[0]  = 1 - 2 * ( yy + zz );
+	mat[1]  =     2 * ( xy + zw );
+	mat[2]  =     2 * ( xz - yw );
+	mat[4]  =     2 * ( xy - zw );
+	mat[5]  = 1 - 2 * ( xx + zz );
+	mat[6]  =     2 * ( yz + xw );
+	mat[8]  =     2 * ( xz + yw );
+	mat[9]  =     2 * ( yz - xw );
+	mat[10] = 1 - 2 * ( xx + yy );
 	
 	mat[3]  = trans[0];
 	mat[7]  = trans[1];
 	mat[11] = trans[2];
-    mat[12] = mat[13] = mat[14] = 0;
-    mat[15] = 1;
+	mat[12] = mat[13] = mat[14] = 0;
+	mat[15] = 1;
 
 #ifdef PRINT_OPTIMIZATION
 	printf( "rot: %5.3f %5.3f %5.3f %5.3f\n", (double)rot[ 0 ], (double)rot[ 1 ], (double)rot[ 2 ], (double)rot[ 3 ] );
@@ -593,7 +604,7 @@ void estimateSquarePose( float* mat, const CvPoint2D32f* p2D, float markerSize )
 // Returns Matrix in Row-major format
 void calcHomography( float* pResult, const CvPoint2D32f* pQuad )
 	{
-	// homography computation á la Harker & O'Leary, simplified for squares
+	// homography computation Ela Harker & O'Leary, simplified for squares
 
 	// subtract mean from points
 	CvPoint2D32f c[ 4 ];
@@ -620,7 +631,7 @@ void calcHomography( float* pResult, const CvPoint2D32f* pQuad )
 	fMatA[ 1 ][ 1 ] = - fMatA[ 0 ][ 1 ];
 	fMatA[ 1 ][ 2 ] = (  -2 * ( c[ 1 ].x + c[ 3 ].x ) );
 
-    fMatA[ 2 ][ 0 ] = (   c[ 0 ].y - c[ 1 ].y - c[ 2 ].y + c[ 3 ].y );
+	fMatA[ 2 ][ 0 ] = (   c[ 0 ].y - c[ 1 ].y - c[ 2 ].y + c[ 3 ].y );
 	fMatA[ 2 ][ 1 ] = ( - c[ 0 ].y - c[ 1 ].y + c[ 2 ].y + c[ 3 ].y );
 	fMatA[ 2 ][ 2 ] = (  -2 * ( c[ 0 ].y + c[ 2 ].y ) );
 	fMatA[ 3 ][ 0 ] = - fMatA[ 2 ][ 0 ];
