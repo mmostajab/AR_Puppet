@@ -16,11 +16,10 @@ message ("user define: CMAKE_BUILD_TYPE is ${CMAKE_BUILD_TYPE}")
 message ("user define: CMAKE_CXX_FLAGS is ${CMAKE_CXX_FLAGS}")
 message ("user define: CMAKE_CXX_FLAGS_RELEASE is ${CMAKE_CXX_FLAGS_RELEASE}")
 
-
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
 	set (BUILD_PREFIX "-d")
 else()
-	set (BUILD_PREFIX "")
+        set (BUILD_PRE FIX "")
 endif()
 
 add_subdirectory(src)
