@@ -230,13 +230,13 @@ void display( GLFWwindow *window, const cv::Mat &img_bgr, std::vector<Marker> &m
         const int code = markers[i].code;
         if (code == 0x005a)
         {
-            for (int j = 0; j < 16; j++)
-                resultMatrix_005A[j] = markers[i].resultMatrix[j];
+            for (int j = 0; j < 16; j++);
+                //resultMatrix_005A[j] = markers[i].resultMatrix[j];
         }
         else if (code == 0x0272)
         {
-            for (int j = 0; j < 16; j++)
-                resultMatrix_0272[j] = markers[i].resultMatrix[j];
+            for (int j = 0; j < 16; j++);
+                //resultMatrix_0272[j] = markers[i].resultMatrix[j];
         }
     }
 
@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
     //  float resultMatrix[16];
     /* Loop until the user closes the window */
 
-    map <int, float* > markerMovement;
+//    map <int, float* > markerMovement;
     while (!glfwWindowShouldClose(window))
     {
         markers.resize(0);
@@ -369,13 +369,13 @@ int main(int argc, char *argv[])
         /* Track a marker */
         markerTracker.findMarker( img_bgr, markers);///resultMatrix);
 
-		for(int i=0; i<markers.size(); i++)
-		{
-			int code = markers[i].code;
-			float translation [3] = {markers[i].resultMatrix[3], markers[i].resultMatrix[7], markers[i].resultMatrix[11]};
+        //for(int i=0; i<markers.size(); i++)
+        //{
+        //	int code = markers[i].code;
+        //	float translation [3] = {markers[i].resultMatrix[3], markers[i].resultMatrix[7], markers[i].resultMatrix[11]};
 			// float * t = & translation;
-			markerMovement[code] = translation;
-		}
+        //	markerMovement[code] = translation;
+        //}
 
         /* Render here */
         display(window,           img_bgr, markers);
@@ -1231,7 +1231,7 @@ int main(int argc, char *argv[])
     glEnable( GL_LIGHT0 );
 
     // make functions known to GLUT
-    glutDisplayFunc( display );
+    //glutDisplayFunc( display );
     glutReshapeFunc( resize  );
     glutIdleFunc( idle );
 
