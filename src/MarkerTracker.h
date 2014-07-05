@@ -5,7 +5,8 @@
 
 struct Marker{
 	int code;
-	float resultMatrix[16];
+	// float resultMatrix[16];
+	cv::Point2f corners[4];
 };
 
 // class CvMemStorage;

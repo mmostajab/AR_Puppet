@@ -102,6 +102,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
     cv::Scalar cyan = CV_RGB(0, 255, 255);
     cv::Scalar yellow = CV_RGB(255, 255, 0);
 
+
     for ( size_t i = 0; i < selectedPoly.size(); i++ )
     {
         cv::polylines(frame, selectedPoly[i], true, redPen, 2);
@@ -231,16 +232,11 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
         // apply binary threshold on thresholdFrame
         cv::threshold(markerImage, markerImage, value, 255, cv::THRESH_BINARY);
         // imshow(kWinName4, markerImage);
-
         int code = 0;
         int angle;
 
         for (int i = 0; i < 6; ++i)
         {
-            //int pixel1 = ((unsigned char*)(iplMarker->imageData + 0*iplMarker->widthStep + i))[0]; //top
-            //int pixel2 = ((unsigned char*)(iplMarker->imageData + 5*iplMarker->widthStep + i))[0]; //bottom
-            //int pixel3 = ((unsigned char*)(iplMarker->imageData + i*iplMarker->widthStep))[0]; //left
-            //int pixel4 = ((unsigned char*)(iplMarker->imageData + i*iplMarker->widthStep + 5))[0]; //right
             int pixel1 = markerImage.at<uchar>(0, i);
             int pixel2 = markerImage.at<uchar>(5, i);
             int pixel3 = markerImage.at<uchar>(i, 0);
@@ -268,13 +264,6 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
             }
         }
 
-        // for (int i = 0; i < 4; i++)
-        // {
-        //     for (int j = 0; j < 4; j++)
-        //         std::cout << markerPoints[i][j] << " ";
-        //     std::cout << std::endl;
-        // }
-
         int codes[4];
         codes[0] = codes[1] = codes[2] = codes[3] = 0;
         for (int i = 0; i < 16; i++)
@@ -295,11 +284,15 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
             codes[3] |= markerPoints[col][3 - row];
         }
 
-        if ( (codes[0] == 0) || (codes[0] == 0xffff) )
+        if ( (codes[0] == 0) || (codes[0] == 0xffff))
             continue;
+
 
         //account for symmetry
         code = codes[0];
+        if( (code != 0x0b44) || (code != 0x1228) || (code != 0x1c44) || (code != 0x0272) )
+            continue;
+
         for ( int i = 1; i < 4; ++i )
         {
             if ( codes[i] < code )
@@ -318,15 +311,6 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
                 corners[j] = corrected_corners[j];
         }
 
-
-        // for(int i=0 ; i< sizeOfPoly; i++)
-        // {
-            // int nextIndex = (i + 1) % 4;
-            // cv::circle(frame, corners[i], 5, yellow, -1);
-            // cv::line(frame, corners[i], corners[nextIndex], redPen, 3, 8, 0);
-// 
-        // }
-
         printf ("Found: %04x\n", code);
 
         for (int j = 0; j < 4; j++)
@@ -337,38 +321,24 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
 
         Marker marker;
         marker.code = code;
+
+        for(int i=0; i< 4; i++)
+        {
+            marker.corners[i] = corners[i];
+        }
+
         //
-        // estimateSquarePose( resultMatrix, corners_old_C_API, 0.025f );
-        estimateSquarePose( marker.resultMatrix, (cv::Point2f *)corners, kMarkerSize );
-
         markers.push_back(marker);
-
 
         // Added in Exercise 9 - End *****************************************************************
 
-        //this part is only for printing
-        // for (int i = 0; i < 4; ++i)
-        // {
-        //     for (int j = 0; j < 4; ++j)
-        //     {
-        //         std::cout << std::setw(6);
-        //         std::cout << std::setprecision(4);
-        //         std::cout << marker.resultMatrix[4 * i + j] << " ";
-        //     }
-        //     std::cout << "\n";
-        // }
-        // std::cout << "\n";
-        // float x, y, z;
-        // x = marker.resultMatrix[3];
-        // y = marker.resultMatrix[7];
-        // z = marker.resultMatrix[11];
-        // std::cout << "length: " << sqrt(x * x + y * y + z * z) << "\n";
-        // std::cout << "\n";
     } // end of loop over contours
 
     cv::imshow(kWinName1, frame);
     // cv::imshow(kWinName2, img_mono);
 
     if (cv::waitKey(10) == 27)
+    {
         exit(0);
+    }
 }

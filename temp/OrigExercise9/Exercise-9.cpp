@@ -18,6 +18,8 @@
 #include "MarkerTracker.h"
 #include "myGL.h"
 
+#define GL_BGR_EXT 0x80E0
+
 using namespace std;
 
 cv::VideoCapture cap;
