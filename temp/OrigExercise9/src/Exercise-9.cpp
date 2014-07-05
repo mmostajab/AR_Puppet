@@ -18,6 +18,8 @@
 #include "MarkerTracker.h"
 #include "myGL.h"
 
+#define GL_BGR_EXT 0x80E0
+
 using namespace std;
 
 cv::VideoCapture cap;
@@ -258,7 +260,7 @@ void reshape( GLFWwindow* window, int width, int height ) {
 
 int main(int argc, char* argv[]) 
 {
-
+	bool firstRun = true;
     GLFWwindow* window, *myWindow;
 
 	/* Initialize the library */
@@ -325,6 +327,7 @@ int main(int argc, char* argv[])
 
 		/* Track a marker */
 		markerTracker.findMarker( img_bgr, markers);///resultMatrix);
+
 
 		/* Render here */
         //display(window,           img_bgr, markers);
