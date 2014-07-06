@@ -16,7 +16,7 @@ TEMPLATE = app
 
 INCLUDEPATH += /opt/local/include
 
-LIBS += -L/opt/local/lib \
+LIBS += -L/usr/local/lib \
         -lopencv_calib3d \
         -lopencv_contrib \
         -lopencv_features2d \
