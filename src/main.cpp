@@ -14,7 +14,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include "PoseEstimation.h"
 #include "MarkerTracker.h"
 #include "myGL.h"
 
@@ -306,8 +305,8 @@ int main(int argc, char* argv[])
     // setup OpenCV
 	cv::Mat img_bgr;
 	initVideoStream(cap);
-	const double kMarkerSize = 0.048; // [m]
-	MarkerTracker markerTracker(kMarkerSize);
+	const double markerSize = 0.032; // [m]
+	MarkerTracker markerTracker("camera.yml",markerSize);
 	
 	std::vector<Marker> markers;
 //	float resultMatrix[16];

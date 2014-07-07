@@ -1,56 +1,30 @@
 #ifndef MARKER_TRACKER_H
 #define MARKER_TRACKER_H
 
-#include <opencv/cv.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
+#include <aruco/aruco.h>
 
-struct Marker{
-	int code;
-	float resultMatrix[16];
-	cv::Point2f corners[4];
+struct Marker
+{
+    int code;
+    float resultMatrix[16];
 };
 
-// class CvMemStorage;
 
-const std::string kWinName1 = "Puppet";
-// const std::string kWinName2 = "Exercise 8 - Converted Image";
-// const std::string kWinName3 = "Exercise 8 - Stripe Image";
-// const std::string kWinName4 = "Exercise 8 - Marker";
-
-class MarkerTracker{
+class MarkerTracker
+{
 public:
-	MarkerTracker(double kMarkerSize_) 
-		:	thresh(100),
-		bw_thresh(100),
-		kMarkerSize(kMarkerSize_)
-	{
-		init();
-	}
-	MarkerTracker(double kMarkerSize_, int thresh_, int bw_thresh_) 
-		:	thresh(thresh_),
-		bw_thresh(bw_thresh_),
-		kMarkerSize(kMarkerSize_)
-	{
-		init();
-	}
-	~MarkerTracker(){
-		cleanup();
-	}
-	void findMarker( cv::Mat &img_bgr, std::vector<Marker> &markers, int blockSize = 35, double C = 9);
-//	void findMarker( cv::Mat &img_bgr, float resultMatrix[16] );
-protected:
-	void init( );
-	void cleanup( );
+    MarkerTracker(std::string intrinsicFileName, double iMarkerSize);
+    virtual ~MarkerTracker();
+    void findMarker( cv::Mat &img_bgr, std::vector<Marker> &markers);
 
-	//camera settings
-	const double kMarkerSize; // Marker size [m]
+private:
+    aruco::CameraParameters camParam;
+    aruco::MarkerDetector MDetector;
+    double markerSize;
 
-	cv::Mat img_gray;
-	cv::Mat img_mono;
-
-	int thresh; // Threshold (gray to mono)
-	int bw_thresh; // threshold for (gray maker to ID image)
-
-	// CvMemStorage* memStorage;
 };
 
 #endif // MARKER_TRACKER_H

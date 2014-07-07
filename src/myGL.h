@@ -431,19 +431,19 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
 
     for(int i=0; i<markers.size(); i++){
         const int code =markers[i].code;
-        if(code == 0x0b44) {
+        if(code == 0) {
             for(int j=0; j<16; j++)
                 resultMatrix_0B44[j] = markers[i].resultMatrix[j];
             markerA_update = true;
-        }else if(code == 0x1228){
+        }else if(code == 2){
             for(int j=0; j<16; j++)
                 resultMatrix_1228[j] = markers[i].resultMatrix[j];
             markerB_update = true;
-        } else if(code == 0x1C44){
+        } else if(code == 1){
             for(int j=0; j<16; j++)
                 resultMatrix_1C44[j] = markers[i].resultMatrix[j];
             markerC_update = true;
-        } else if(code == 0x0272){
+        } else if(code == 3){
             for(int j=0; j<16; j++)
                 resultMatrix_0272[j] = markers[i].resultMatrix[j];
             markerD_update = true;
