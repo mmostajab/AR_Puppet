@@ -328,7 +328,7 @@ int main(int argc, char* argv[])
 		/* Track a marker */
 		markerTracker.findMarker( img_bgr, markers);///resultMatrix);
 
-
+		
 		/* Render here */
         //display(window,           img_bgr, markers);
         myDisplay(myWindow, markers);
