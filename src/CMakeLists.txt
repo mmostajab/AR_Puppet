@@ -10,20 +10,19 @@ find_package(GLUT REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(GLFW3 REQUIRED)
+find_package(aruco REQUIRED)
 
 include_directories(${EIGEN3_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS})
-add_executable (inversekinematics
-  PoseEstimation.cpp
+add_executable (ARPuppet
   myGL.h
-  Exercise-9.cpp
+  main.cpp
   MarkerTracker.cpp)
 
-target_link_libraries (inversekinematics ${OpenCV_LIBS} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES})
-# ${PCL_LIBRARIES} ${OpenCV_LIBS} ${cvsba_LIBS})
+target_link_libraries (ARPuppet ${OpenCV_LIBS} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES} ${aruco_LIBS})
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
-	set_target_properties(inversekinematics PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_DEBUG_DIR})
-	set_target_properties(inversekinematics PROPERTIES OUTPUT_NAME inversekinematics${BUILD_PREFIX})
+	set_target_properties(ARPuppet PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_DEBUG_DIR})
+	set_target_properties(ARPuppet PROPERTIES OUTPUT_NAME ARPuppet${BUILD_PREFIX})
 else()
-	set_target_properties(inversekinematics PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RELEASE_DIR})
+	set_target_properties(ARPuppet PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RELEASE_DIR})
 endif()
