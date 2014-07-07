@@ -14,11 +14,9 @@ find_package(GLFW3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS})
 add_executable (inversekinematics
   PoseEstimation.cpp
-  linkedstructure.cpp
+  myGL.h
   Exercise-9.cpp
-  MarkerTracker.cpp
-  link.h
-  glfunctions.h)
+  MarkerTracker.cpp)
 
 target_link_libraries (inversekinematics ${OpenCV_LIBS} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES})
 # ${PCL_LIBRARIES} ${OpenCV_LIBS} ${cvsba_LIBS})

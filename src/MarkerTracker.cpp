@@ -327,6 +327,8 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers, in
             marker.corners[i] = corners[i];
         }
 
+        estimateSquarePose( marker.resultMatrix, (cv::Point2f*)corners, kMarkerSize );
+        std::cout << "x: " << marker.resultMatrix[3] << "  y: " << marker.resultMatrix[7] << "  z: " << marker.resultMatrix[11] << std::endl;
         //
         markers.push_back(marker);
 
