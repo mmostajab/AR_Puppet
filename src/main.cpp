@@ -16,6 +16,7 @@
 
 #include "MarkerTracker.h"
 #include "myGL.h"
+#include "combineWindowHandler.h"
 
 #define GL_BGR_EXT 0x80E0
 
@@ -31,7 +32,7 @@ bool debugmode = false;
 bool balldebug = false;
 
 
-float resultTransposedMatrix[16];
+
 float snowmanLookVector[4];
 int towards = 0x005A;
 int towardsList[4] = {0x0b44, 0x1C44, 0x1228, 0x0272};
@@ -40,10 +41,7 @@ Position ballpos;
 int ballspeed = 100;
 // Added in Exercise 9 - End *****************************************************************
 
-//camera settings
-const int camera_width  = 640; 
-const int camera_height = 480;
-unsigned char bkgnd[camera_width*camera_height*3];
+
 
 
 void initVideoStream( cv::VideoCapture &cap ) {
@@ -134,7 +132,7 @@ void rotateToMarker(float thisMarker[16], float lookAtMarker[16], int markernumb
 // Added in Exercise 9 - End *****************************************************************
 
 
-void display( GLFWwindow* window, const cv::Mat &img_bgr, std::vector<Marker> &markers ) 
+void display( GLFWwindow* window, const cv::Mat &img_bgr, std::vector<Marker> &markers )
 {
 	memcpy( bkgnd, img_bgr.data, sizeof(bkgnd) );
 
@@ -237,7 +235,7 @@ void display( GLFWwindow* window, const cv::Mat &img_bgr, std::vector<Marker> &m
 
 void reshape( GLFWwindow* window, int width, int height ) {
 
-	// set a whole-window viewport
+    // set a whole-window viewport
 	glViewport( 0, 0, (GLsizei)width, (GLsizei)height );
 
 	// create a perspective projection matrix
@@ -260,7 +258,7 @@ void reshape( GLFWwindow* window, int width, int height ) {
 int main(int argc, char* argv[]) 
 {
 	bool firstRun = true;
-    GLFWwindow* window, *myWindow;
+    GLFWwindow* combineWindow, *markerPositionWindow;
 
 	/* Initialize the library */
 	if (!glfwInit())
@@ -268,16 +266,16 @@ int main(int argc, char* argv[])
 
 
 	// initialize the window system
-	/* Create a windowed mode window and its OpenGL context */
-    //window = glfwCreateWindow(camera_width, camera_height, "Exercise 8 - Combine", NULL, NULL);
-    //if (!window)
-    //{
-    //	glfwTerminate();
-    //	return -1;
-    //}
+    /* Create a windowed mode window and its OpenGL context */
+    combineWindow = glfwCreateWindow(camera_width, camera_height, "Combine Window", NULL, NULL);
+    if (!combineWindow)
+    {
+        glfwTerminate();
+        return -1;
+    }
 
-    myWindow = glfwCreateWindow(camera_width, camera_height, "My Window", NULL, NULL);
-    if (!myWindow)
+    markerPositionWindow = glfwCreateWindow(camera_width, camera_height, "Marker Positions", NULL, NULL);
+    if (!markerPositionWindow)
     {
         glfwTerminate();
         return -1;
@@ -285,18 +283,27 @@ int main(int argc, char* argv[])
 	
 	// Set callback functions for GLFW
     //glfwSetFramebufferSizeCallback(window, reshape);
-    glfwSetFramebufferSizeCallback(myWindow, myReshape);
+    glfwSetFramebufferSizeCallback(markerPositionWindow, myReshape);
+    //glfwSetFramebufferSizeCallback(combineWindow, combineReshape);
 
-    //glfwMakeContextCurrent(window);
-    glfwMakeContextCurrent(myWindow);
-
+    //glfwMakeContextCurrent(window); 
 	glfwSwapInterval( 1 );
 	
-    int window_width, window_height, myWindow_width, myWindow_height;
-    //glfwGetFramebufferSize(window, &window_width, &window_height);
-    glfwGetFramebufferSize(myWindow, &myWindow_width, &myWindow_height);
-    reshape(myWindow, myWindow_width, myWindow_height);
+    glfwSetWindowPos(markerPositionWindow, 640, 0);
+
+    int window_width, window_height, markerPositionWindow_width, markerPositionWindow_height;
+
+
+    glfwMakeContextCurrent(markerPositionWindow);
+    glfwGetFramebufferSize(markerPositionWindow, &markerPositionWindow_width, &markerPositionWindow_height);
+    reshape(markerPositionWindow, markerPositionWindow_width, markerPositionWindow_height);
 	glViewport(0, 0, window_width, window_height);
+
+
+    glfwMakeContextCurrent(combineWindow);
+    glfwGetFramebufferSize(combineWindow, &window_width, &window_height);
+    combineReshape(combineWindow, window_width, window_height);
+    glViewport(0, 0, window_width, window_height);
 
 	// initialize the GL library
     //initGL(argc, argv);
@@ -311,7 +318,7 @@ int main(int argc, char* argv[])
 	std::vector<Marker> markers;
 //	float resultMatrix[16];
 	/* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(myWindow))
+    while (!glfwWindowShouldClose(combineWindow))
 	{
 		markers.resize(0);
 		/* Capture here */
@@ -330,11 +337,18 @@ int main(int argc, char* argv[])
 		
 		/* Render here */
         //display(window,           img_bgr, markers);
-        myDisplay(myWindow, markers);
+
 
 		/* Swap front and back buffers */
-        //glfwSwapBuffers(window);
-        glfwSwapBuffers(myWindow);
+
+
+        glfwMakeContextCurrent(combineWindow);
+        combineDisplay(combineWindow, img_bgr, markers);
+        glfwSwapBuffers(combineWindow);
+
+        glfwMakeContextCurrent(markerPositionWindow);
+        myDisplay(markerPositionWindow, markers);
+        glfwSwapBuffers(markerPositionWindow);
 
 		/* Poll for and process events */
 		glfwPollEvents();
