@@ -40,7 +40,7 @@ MarkerTracker::~MarkerTracker()
 {
 }
 
-int MarkerTracker::uniqueMarker(int id, std::vector < std::pair <int, int> > & bestCandidates, int inx)
+void MarkerTracker::uniqueMarker(int id, std::vector < std::pair <int, int> > & bestCandidates, int inx)
 {
     for (int j = 0; j < 4; j++)
         for (int k = 0; k < 5; k++)
@@ -54,10 +54,10 @@ int MarkerTracker::uniqueMarker(int id, std::vector < std::pair <int, int> > & b
                     bestCandidates[j].second = inx;
                 }
                 // std::cout << "current: " << bestCandidates[j].first << " " << bestCandidates[j].second << std::endl;
-                return inx;
+                return;
             }
 
-    return -1;
+    return;
 }
 
 void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers)
@@ -72,7 +72,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers)
 
     for (std::size_t i(0); i < myMarkers.size(); i++)
     {   
-        int res = uniqueMarker(myMarkers[i].id, bestCandidates, i);
+        uniqueMarker(myMarkers[i].id, bestCandidates, i);
         // std::cout << "marker inx: " << res << std::endl;
     }
 
@@ -83,6 +83,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers)
 
         aruco::Marker & bestMarker = myMarkers[bestCandidates[i].second];
         Marker tempMarker;
+        tempMarker.code = bestMarker.id;
         bestMarker.draw(frame, cv::Scalar(0, 0, 255), 2);
         cv::Mat Rotation;
         cv::Rodrigues(bestMarker.Rvec, Rotation);

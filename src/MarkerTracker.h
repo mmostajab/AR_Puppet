@@ -19,7 +19,7 @@ public:
     MarkerTracker(std::string intrinsicFileName, double iMarkerSize);
     virtual ~MarkerTracker();
     void findMarker(cv::Mat &img_bgr, std::vector<Marker> &markers);
-    int uniqueMarker(int id, std::vector < std::pair <int, int> > & bestCandidates, int inx);
+    void uniqueMarker(int id, std::vector < std::pair <int, int> > & bestCandidates, int inx);
 
 private:
     aruco::CameraParameters camParam;
