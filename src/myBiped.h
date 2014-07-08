@@ -146,43 +146,92 @@ void drawBiped()
 void updateBiped()
 {
 
-  leftHand.update();
-  //leftHand.update();
-  if(leftHand.isTargetResolved())
-  {
-      leftHand_targetPoint = leftHand.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
-      //leftHand_targetPoint = leftHand.getPointWithinRange(-0.0001, -0.0001, -0.0001);
-      leftHand.moveToPoint(leftHand_targetPoint);
-  }
+//  leftHand.update();
+//  //leftHand.update();
+//  if(leftHand.isTargetResolved())
+//  {
+//      leftHand_targetPoint = leftHand.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+//      //leftHand_targetPoint = leftHand.getPointWithinRange(-0.0001, -0.0001, -0.0001);
+//      leftHand.moveToPoint(leftHand_targetPoint);
+//  }
 
-  rightHand.update();
-  //rightHand.update();
-  if(rightHand.isTargetResolved())
-  {
-      rightHand_targetPoint = rightHand.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
-      //rightHand_targetPoint = rightFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
-      rightHand.moveToPoint(rightHand_targetPoint);
-  }
+//  rightHand.update();
+//  //rightHand.update();
+//  if(rightHand.isTargetResolved())
+//  {
+//      rightHand_targetPoint = rightHand.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+//      //rightHand_targetPoint = rightFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
+//      rightHand.moveToPoint(rightHand_targetPoint);
+//  }
 
-  leftFoot.update();
-  //leftFoot.update();
-  if(leftFoot.isTargetResolved())
-  {
-       leftFoot_targetPoint = leftFoot.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
-      //leftFoot_targetPoint = leftFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
-      leftFoot.moveToPoint(leftFoot_targetPoint);
-  }
+//  leftFoot.update();
+//  //leftFoot.update();
+//  if(leftFoot.isTargetResolved())
+//  {
+//       leftFoot_targetPoint = leftFoot.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+//      //leftFoot_targetPoint = leftFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
+//      leftFoot.moveToPoint(leftFoot_targetPoint);
+//  }
 
-  rightFoot.update();
-  //rightFoot.update();
-  if(rightFoot.isTargetResolved())
-  {
-      rightFoot_targetPoint = rightFoot.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
-      //rightFoot_targetPoint = rightFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
-      rightFoot.moveToPoint(rightFoot_targetPoint);
-  }
+//  rightFoot.update();
+//  //rightFoot.update();
+//  if(rightFoot.isTargetResolved())
+//  {
+//      rightFoot_targetPoint = rightFoot.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+//      //rightFoot_targetPoint = rightFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
+//      rightFoot.moveToPoint(rightFoot_targetPoint);
+//  }
 
-  std::cout << "update is called...\n";
+//  std::cout << "update is called...\n";
 }
+
+void updateA(float x, float y, float z, bool u)
+{
+
+
+    if(u)
+    {
+        rightFoot.update();
+        rightFoot_targetPoint = rightFoot.getPointWithinRange(x, y, z);
+        rightFoot.moveToPoint(rightFoot_targetPoint);
+    }
+}
+
+void updateB(float x, float y, float z, bool u)
+{
+
+
+    if(u)
+    {
+        leftHand.update();
+        leftHand_targetPoint = leftHand.getPointWithinRange(x, y, z);
+        leftHand.moveToPoint(leftHand_targetPoint);
+    }
+}
+
+void updateC(float x, float y, float z, bool u)
+{
+
+
+    if(u)
+    {
+        leftFoot.update();
+        leftFoot_targetPoint = leftFoot.getPointWithinRange(x, y, z);
+        leftFoot.moveToPoint(leftFoot_targetPoint);
+    }
+}
+
+void updateD(float x, float y, float z, bool u)
+{
+
+
+    if(u)
+    {
+        rightHand.update();
+        rightHand_targetPoint = rightHand.getPointWithinRange(x, y, z);
+        rightHand.moveToPoint(rightHand_targetPoint);
+    }
+}
+
 
 #endif

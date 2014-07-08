@@ -83,7 +83,7 @@ void MarkerTracker::findMarker( cv::Mat &frame, std::vector<Marker> &markers)
 
         aruco::Marker & bestMarker = myMarkers[bestCandidates[i].second];
         Marker tempMarker;
-        tempMarker.code = bestMarker.id;
+        tempMarker.code = i;
         bestMarker.draw(frame, cv::Scalar(0, 0, 255), 2);
         cv::Mat Rotation;
         cv::Rodrigues(bestMarker.Rvec, Rotation);

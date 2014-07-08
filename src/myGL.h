@@ -27,6 +27,8 @@ float resultMatrix_0272[16];
 float resultMatrix_1228[16];
 float resultMatrix_1C44[16];
 
+bool markerA_update = false, markerB_update = false, markerC_update = false, markerD_update = false;
+
 const float virtual_camera_angle = 30.0f;
 
 void myReshape( GLFWwindow* window, int width, int height ) ;
@@ -39,6 +41,11 @@ struct stVec
 
     stVec(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f): x(_x), y(_y), z(_z)
     {
+    }
+
+    void zero()
+    {
+        x = y= z = 0;
     }
 
     bool nonZero() const
@@ -69,8 +76,19 @@ struct stVec
          return out;
      }
 
+     const stVec& operator=(const stVec& _r)
+     {
+         x = _r.x;
+         y = _r.y;
+         z = _r.z;
+
+         return (*this);
+     }
+
      operator stPos();
 };
+
+stVec movA, movB, movC, movD;
 
 struct stPos
 {
@@ -206,7 +224,7 @@ void myInitGL(int argc, char *argv[])
     markerDpos.x = markerDInitPos.x = 0.0f; markerDpos.y = markerDInitPos.y = 0.0f; markerDpos.z = markerDInitPos.z =  0.5f; markerDpos.r = 1; markerDpos.g = 0; markerDpos.b = 0;
 }
 
-void update(float* transform, stPos initPos, stPos& pos)
+stVec update(float* transform, stPos initPos, stPos& pos)
 {
     stPos nextPos;
 
@@ -224,12 +242,14 @@ void update(float* transform, stPos initPos, stPos& pos)
     if(movLen > 1)
     {
         std::cout << "transform is not accepted\n\n";
-        return;
+        return stVec() ;
     }
 
     pos.x += mov.x / 100;
     pos.y += mov.y / 100;
     pos.z += mov.z / 100;
+
+    return mov;
 }
 
 void setIdentity(float* mat)
@@ -262,12 +282,14 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 
-    bool markerA_update = false, markerB_update = false, markerC_update = false, markerD_update = false;
+    markerA_update = false; markerB_update = false; markerC_update = false; markerD_update = false;
 
     //setIdentity(resultMatrix_0B44);
     //setIdentity(resultMatrix_1228);
     //setIdentity(resultMatrix_1C44);
     //setIdentity(resultMatrix_0272);
+
+    std::cout << "number of markers = " << markers.size() << std::endl;
 
     for(int i=0; i<markers.size(); i++){
         const int code =markers[i].code;
@@ -289,7 +311,7 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
             markerD_update = true;
         }
 
-        //std:://std::cout << code << "\n";
+        std::cout << "code = " << code << "\n";
     }
 
     //std::cout << "Marker A Translation:  " << markerA_Translate.x << ", " << markerA_Translate.y << ", " << markerA_Translate.z << std::endl;
@@ -319,44 +341,101 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
     printMat(resultMatrix_0272);
     std::cout << std::endl << std::endl;
 
-    if(markerA_update || markerB_update)
-    {
-        if(markerA_update && markerB_update)
-        {
-            update(resultMatrix_1228, markerAInitPos, markerApos);
-            update(resultMatrix_0B44, markerBInitPos, markerBpos);
+    movA.zero(); movB.zero(); movC.zero(); movD.zero();
 
-            stVec dif;
-            dif.x = markerApos.x + markerBpos.x;
-            dif.y = markerApos.y + markerBpos.y;
-            dif.z = markerApos.z + markerBpos.z;
+    if(markerA_update)
+        movA = update(resultMatrix_1228, markerAInitPos, markerApos);
 
-            markerApos.x += dif.x / 2;
-            markerApos.y += dif.y / 2;
-            markerApos.z += dif.z / 2;
+    if(markerB_update)
+        movB = update(resultMatrix_0B44, markerBInitPos, markerBpos);
 
-            //markerBpos.x -= dif.x / 2;
-            //markerBpos.y -= dif.y / 2;
-            //markerBpos.z -= dif.z / 2;
+    if(markerC_update)
+        movC = update(resultMatrix_1C44, markerCInitPos, markerCpos);
 
-            float r, g, b;
+    if(markerD_update)
+        movD = update(resultMatrix_0272, markerDInitPos, markerDpos);
 
-            r = markerApos.r;
-            g = markerApos.g;
-            b = markerApos.b;
+//    if(markerA_update || markerB_update)
+//    {
+//        if(markerA_update && markerB_update)
+//        {
+//            update(resultMatrix_1228, markerAInitPos, markerApos);
+//            update(resultMatrix_0B44, markerBInitPos, markerBpos);
 
-            if(markerApos.len2() > 0.1)
-            {
-                markerApos = stVec(markerApos).normalize() * 0.5;
-            }
+//            stVec dif;
+//            dif.x = markerApos.x + markerBpos.x;
+//            dif.y = markerApos.y + markerBpos.y;
+//            dif.z = markerApos.z + markerBpos.z;
 
-            markerApos.r = r;
-            markerApos.g = g;
-            markerApos.b = b;
+//            markerApos.x += dif.x / 2;
+//            markerApos.y += dif.y / 2;
+//            markerApos.z += dif.z / 2;
 
-            markerBpos.x = -markerApos.x;
-            markerBpos.y = -markerApos.y;
-            markerBpos.z = -markerApos.z;
+//            //markerBpos.x -= dif.x / 2;
+//            //markerBpos.y -= dif.y / 2;
+//            //markerBpos.z -= dif.z / 2;
+
+//            float r, g, b;
+
+//            r = markerApos.r;
+//            g = markerApos.g;
+//            b = markerApos.b;
+
+//            if(markerApos.len2() > 0.1)
+//            {
+//                markerApos = stVec(markerApos).normalize() * 0.5;
+//            }
+
+//            markerApos.r = r;
+//            markerApos.g = g;
+//            markerApos.b = b;
+
+//            markerBpos.x = -markerApos.x;
+//            markerBpos.y = -markerApos.y;
+//            markerBpos.z = -markerApos.z;
+//            r = markerBpos.r;
+//            g = markerBpos.g;
+//           b = markerBpos.b;
+
+//           if(markerBpos.len2() > 0.1)
+//           {
+//                markerBpos = stVec(markerBpos).normalize() * 0.5;
+//           }
+
+//           markerBpos.r = r;
+//            markerBpos.g = g;
+//            markerBpos.b = b;
+//        }
+//        else if(markerA_update)
+//        {
+//            update(resultMatrix_1228, markerAInitPos, markerApos);
+
+//            float r, g, b;
+
+//            r = markerApos.r;
+//            g = markerApos.g;
+//            b = markerApos.b;
+
+//            if(markerApos.len2() > 0.1)
+//            {
+//                markerApos = stVec(markerApos).normalize() * 0.5;
+//            }
+
+//            markerApos.r = r;
+//            markerApos.g = g;
+//            markerApos.b = b;
+
+//            markerBpos.x = -markerApos.x;
+//            markerBpos.y = -markerApos.y;
+//            markerBpos.z = -markerApos.z;
+
+//        }
+//        else if(markerB_update)
+//        {
+//            update(resultMatrix_0B44, markerBInitPos, markerBpos);
+
+//            float r, g, b;
+
 //            r = markerBpos.r;
 //            g = markerBpos.g;
 //            b = markerBpos.b;
@@ -369,54 +448,11 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
 //            markerBpos.r = r;
 //            markerBpos.g = g;
 //            markerBpos.b = b;
-        }
-        else if(markerA_update)
-        {
-            update(resultMatrix_1228, markerAInitPos, markerApos);
 
-            float r, g, b;
-
-            r = markerApos.r;
-            g = markerApos.g;
-            b = markerApos.b;
-
-            if(markerApos.len2() > 0.1)
-            {
-                markerApos = stVec(markerApos).normalize() * 0.5;
-            }
-
-            markerApos.r = r;
-            markerApos.g = g;
-            markerApos.b = b;
-
-            markerBpos.x = -markerApos.x;
-            markerBpos.y = -markerApos.y;
-            markerBpos.z = -markerApos.z;
-
-        }
-        else if(markerB_update)
-        {
-            update(resultMatrix_0B44, markerBInitPos, markerBpos);
-
-            float r, g, b;
-
-            r = markerBpos.r;
-            g = markerBpos.g;
-            b = markerBpos.b;
-
-            if(markerBpos.len2() > 0.1)
-            {
-                markerBpos = stVec(markerBpos).normalize() * 0.5;
-            }
-
-            markerBpos.r = r;
-            markerBpos.g = g;
-            markerBpos.b = b;
-
-            markerApos.x = -markerBpos.x;
-            markerApos.y = -markerBpos.y;
-            markerApos.z = -markerBpos.z;
-        }
+//            markerApos.x = -markerBpos.x;
+//            markerApos.y = -markerBpos.y;
+//            markerApos.z = -markerBpos.z;
+//        }
         
 //        if(markerA_update && markerB_update)
 //        {
@@ -521,37 +557,37 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
 //            }
 //        }
 
-        markerATrajectory.push_back(markerApos);
-        markerBTrajectory.push_back(markerBpos);
-    }
+   //     markerATrajectory.push_back(markerApos);
+  //      markerBTrajectory.push_back(markerBpos);
+  //  }
 
-    if(markerC_update || markerD_update)
-    {
-        if(markerC_update && markerD_update)
-        {
-            update(resultMatrix_1C44, markerCInitPos, markerCpos);
-            update(resultMatrix_0272, markerDInitPos, markerDpos);
-        }
-        else if(markerC_update)
-        {
-            update(resultMatrix_1C44, markerCInitPos, markerCpos);
+//    if(markerC_update || markerD_update)
+//    {
+//        if(markerC_update && markerD_update)
+//        {
+//            update(resultMatrix_1C44, markerCInitPos, markerCpos);
+//            update(resultMatrix_0272, markerDInitPos, markerDpos);
+//        }
+//        else if(markerC_update)
+//        {
+//            update(resultMatrix_1C44, markerCInitPos, markerCpos);
 
 
 
-            markerDpos.x = -markerCpos.x;
-            markerDpos.y = -markerCpos.y;
-            markerDpos.z = -markerCpos.z;
+//            markerDpos.x = -markerCpos.x;
+//            markerDpos.y = -markerCpos.y;
+//            markerDpos.z = -markerCpos.z;
 
-        }
-        else if(markerD_update)
-        {
-            update(resultMatrix_0272, markerDInitPos, markerDpos);
+//        }
+//        else if(markerD_update)
+//        {
+//            update(resultMatrix_0272, markerDInitPos, markerDpos);
 
-            markerCpos.x = -markerDpos.x;
-            markerCpos.y = -markerDpos.y;
-            markerCpos.z = -markerDpos.z;
-        }
-    }
+//            markerCpos.x = -markerDpos.x;
+//            markerCpos.y = -markerDpos.y;
+//            markerCpos.z = -markerDpos.z;
+//        }
+//    }
 
 //    if(markerC_update || markerD_update)
 //    {

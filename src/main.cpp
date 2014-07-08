@@ -17,6 +17,7 @@
 #include "MarkerTracker.h"
 #include "MarkerTracker_KK.h"
 #include "myGL.h"
+
 #include "combineWindowHandler.h"
 
 #define GL_BGR_EXT 0x80E0
@@ -332,7 +333,11 @@ int main(int argc, char* argv[])
 	{
 		markers.resize(0);
 		/* Capture here */
-		cap >> img_bgr;
+
+        for(int i = 0; i < 5; i++)
+            cap >> img_bgr;
+
+        cv::Mat img_bgr_mov = img_bgr.clone();
 		
 		if(img_bgr.empty()){
 			std::cout << "Could not query frame. Trying to reinitialize." << std::endl;
@@ -343,7 +348,7 @@ int main(int argc, char* argv[])
 
 		/* Track a marker */
         markerTracker_KK.findMarker( img_bgr, markers_KK);
-        markerTracker.findMarker( img_bgr, markers);///resultMatrix);
+        markerTracker.findMarker( img_bgr_mov, markers);///resultMatrix);
 
 		
 		/* Render here */
@@ -357,20 +362,29 @@ int main(int argc, char* argv[])
         combineDisplay(combineWindow, img_bgr, markers_KK);
         glfwSwapBuffers(combineWindow);
 
-        //glfwMakeContextCurrent(markerPositionWindow);
-        //myDisplay(markerPositionWindow, markers);
-        //glfwSwapBuffers(markerPositionWindow);
+        glfwMakeContextCurrent(markerPositionWindow);
+        myDisplay(markerPositionWindow, markers);
+        glfwSwapBuffers(markerPositionWindow);
 
-        if(updateIter < 5)
-        {
+//        if(updateIter < 3)
+//        {
+//            updateIter++;
+//        }
+//        else
+//        {
+            updateA(movA.x, movA.y, movA.z, markerA_update);
 
-            updateIter++;
-        }
-        else
-        {
-            updateBiped();
-            updateIter = 0;
-        }
+            //if(isUpdatedB)
+                updateB(movB.x, movB.y, movB.z, markerB_update);
+
+           //if(isUpdatedC)
+                updateC(movC.x, movC.y, movC.z, markerC_update);
+
+            //if(isUpdatedD)
+                updateD(movD.x, movD.y, movD.z, markerD_update);
+
+         //   updateIter = 0;
+        //}
 
 		/* Poll for and process events */
 		glfwPollEvents();
