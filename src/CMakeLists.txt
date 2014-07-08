@@ -16,7 +16,12 @@ include_directories(${EIGEN3_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS})
 add_executable (ARPuppet
   myGL.h
   main.cpp
-  MarkerTracker.cpp)
+  MarkerTracker.cpp
+  color.h
+  link.h
+  myBiped.h
+  linkedstructure.cpp
+  combineWindowHandler.h)
 
 target_link_libraries (ARPuppet ${OpenCV_LIBS} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES} ${aruco_LIBS})
 
