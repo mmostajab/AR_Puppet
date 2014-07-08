@@ -12,7 +12,7 @@ const int camera_width  = 640;
 const int camera_height = 480;
 unsigned char bkgnd[camera_width*camera_height*3];
 
-void combineDisplay( GLFWwindow* window, const cv::Mat &img_bgr, std::vector<Marker> &markers )
+void combineDisplay( GLFWwindow* window, const cv::Mat &img_bgr, std::vector<Marker_KK> &markers )
 {
 	memcpy( bkgnd, img_bgr.data, sizeof(bkgnd) );
 
@@ -45,68 +45,30 @@ void combineDisplay( GLFWwindow* window, const cv::Mat &img_bgr, std::vector<Mar
 
     // move to marker-position
     glMatrixMode( GL_MODELVIEW );
-    
-	for( int i=0; i<markers.size(); i++){
-
-	}
-		
-
-// Added in Exercise 9 - Start *****************************************************************
+    	
 	float resultMatrix_005A[16];
-	float resultMatrix_0272[16];
+
+    int found = 0;
 	for(int i=0; i<markers.size(); i++){
 		const int code =markers[i].code;
-		if(code == 0x005a) {
+        if(code == 0x005a) {
 			for(int j=0; j<16; j++)
 				resultMatrix_005A[j] = markers[i].resultMatrix[j];
-		}else if(code == 0x0272){
-			for(int j=0; j<16; j++)
-				resultMatrix_0272[j] = markers[i].resultMatrix[j];
-		}
+            found = 1;
+        }
 	}
 
-
-	for (int x=0; x<4; ++x)
-		for (int y=0; y<4; ++y)
-			resultTransposedMatrix[x*4+y] = resultMatrix_005A[y*4+x];
-// Added in Exercise 9 - End *****************************************************************
+    if(found > 0)
+    {
+        for (int x=0; x<4; ++x)
+            for (int y=0; y<4; ++y)
+                resultTransposedMatrix[x*4+y] = resultMatrix_005A[y*4+x];
 
 	//glLoadTransposeMatrixf( resultMatrix );
-	glLoadMatrixf( resultTransposedMatrix );
-	//drawSnowman(false);
-	drawBiped();
+        glLoadMatrixf( resultTransposedMatrix );
 
-
-// Added in Exercise 9 - Start *****************************************************************
-	/*rotateToMarker(resultMatrix_005A, resultMatrix_0272, 0x005a);
-
-	//drawSnowman( 0 );
-
-	for (int x=0; x<4; ++x)
-		for (int y=0; y<4; ++y)
-			resultTransposedMatrix[x*4+y] = resultMatrix_0272[y*4+x];
-
-	glLoadMatrixf( resultTransposedMatrix );
-	
-	rotateToMarker(resultMatrix_0272, resultMatrix_005A, 0x0272);
-
-	//drawSnowman( 1 );
-
-	//drawBall
-	glLoadIdentity();
-	glTranslatef(ballpos.x, ballpos.y + 0.024, ballpos.z);
-	glColor4f(1,0,0,1);
-	drawSphere(0.005, 10, 10);*/
-// Added in Exercise 9 - End *****************************************************************
-
-
-	int key = cvWaitKey (10);
-	if (key == 27) exit(0);
-	// Added in Exercise 9 - Start *****************************************************************
-//	else if (key == 100) debugmode = !debugmode;
-//	else if (key == 98) balldebug = !balldebug;
-	// Added in Exercise 9 - End *****************************************************************
-	
+        drawBiped();
+    }
 }
 
 

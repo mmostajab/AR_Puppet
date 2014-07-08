@@ -15,6 +15,7 @@
 #include <math.h>
 
 #include "MarkerTracker.h"
+#include "MarkerTracker_KK.h"
 #include "myGL.h"
 #include "combineWindowHandler.h"
 
@@ -280,11 +281,13 @@ int main(int argc, char* argv[])
         glfwTerminate();
         return -1;
     }
+
+    initBiped();
 	
 	// Set callback functions for GLFW
     //glfwSetFramebufferSizeCallback(window, reshape);
-    glfwSetFramebufferSizeCallback(markerPositionWindow, myReshape);
-    //glfwSetFramebufferSizeCallback(combineWindow, combineReshape);
+    //glfwSetFramebufferSizeCallback(markerPositionWindow, myReshape);
+    glfwSetFramebufferSizeCallback(combineWindow, combineReshape);
 
     //glfwMakeContextCurrent(window); 
 	glfwSwapInterval( 1 );
@@ -294,13 +297,15 @@ int main(int argc, char* argv[])
     int window_width, window_height, markerPositionWindow_width, markerPositionWindow_height;
 
 
-    glfwMakeContextCurrent(markerPositionWindow);
-    glfwGetFramebufferSize(markerPositionWindow, &markerPositionWindow_width, &markerPositionWindow_height);
-    reshape(markerPositionWindow, markerPositionWindow_width, markerPositionWindow_height);
-	glViewport(0, 0, window_width, window_height);
+    //glfwMakeContextCurrent(markerPositionWindow);
+    //glfwSwapInterval( 1 );
+    //glfwGetFramebufferSize(markerPositionWindow, &markerPositionWindow_width, &markerPositionWindow_height);
+    //reshape(markerPositionWindow, markerPositionWindow_width, markerPositionWindow_height);
+    //glViewport(0, 0, window_width, window_height);
 
 
     glfwMakeContextCurrent(combineWindow);
+    glfwSwapInterval( 1 );
     glfwGetFramebufferSize(combineWindow, &window_width, &window_height);
     combineReshape(combineWindow, window_width, window_height);
     glViewport(0, 0, window_width, window_height);
@@ -314,8 +319,10 @@ int main(int argc, char* argv[])
 	initVideoStream(cap);
 	const double markerSize = 0.032; // [m]
 	MarkerTracker markerTracker("camera.yml",markerSize);
+    MarkerTracker_KK markerTracker_KK(0.048);
 	
 	std::vector<Marker> markers;
+    std::vector<Marker_KK> markers_KK;
 //	float resultMatrix[16];
 	/* Loop until the user closes the window */
     while (!glfwWindowShouldClose(combineWindow))
@@ -332,7 +339,8 @@ int main(int argc, char* argv[])
 		}
 
 		/* Track a marker */
-		markerTracker.findMarker( img_bgr, markers);///resultMatrix);
+        markerTracker_KK.findMarker( img_bgr, markers_KK);
+        //markerTracker.findMarker( img_bgr, markers);///resultMatrix);
 
 		
 		/* Render here */
@@ -343,12 +351,14 @@ int main(int argc, char* argv[])
 
 
         glfwMakeContextCurrent(combineWindow);
-        combineDisplay(combineWindow, img_bgr, markers);
+        combineDisplay(combineWindow, img_bgr, markers_KK);
         glfwSwapBuffers(combineWindow);
 
-        glfwMakeContextCurrent(markerPositionWindow);
-        myDisplay(markerPositionWindow, markers);
-        glfwSwapBuffers(markerPositionWindow);
+        //glfwMakeContextCurrent(markerPositionWindow);
+        //myDisplay(markerPositionWindow, markers);
+        //glfwSwapBuffers(markerPositionWindow);
+
+        updateBiped();
 
 		/* Poll for and process events */
 		glfwPollEvents();

@@ -70,10 +70,11 @@ void LinkedStructure::moveToPoint(const VectorXf position)
 
 void LinkedStructure::draw()
 {
+    GLUquadricObj *sphere = gluNewQuadric();
+
     // Drawing the linke structureo on the scren
     glPushMatrix();
     
-    //glScalef(0.01, 0.01, 0.01);
     glRotatef(90, 1, 0, 0);
     glTranslatef(0.0,mBasePosition(1), mBasePosition(0));
     
@@ -88,10 +89,13 @@ void LinkedStructure::draw()
 	mList[i]->mColor.apply();
         gluCylinder(mList[i]->mObj, radius, radius * 1.5, mList[i]->mLength, 20, 20);
         glTranslatef(0, 0, mList[i]->mLength );
-	Color c = { 1.0, 0, 0};
-	c.apply();
+    //Color c = { 1.0, 0, 0};
+    //c.apply();
 	// Draw the sphere to show the joint position
        // glutSolidSphere(radius * 1.5, 20, 20);
+       gluSphere(sphere, radius * 1.5, 20, 20);
+
+       std::cout << mBasePosition(0) << " " << mBasePosition(1) << std::endl;
 
         radius *= 1.5;
     }

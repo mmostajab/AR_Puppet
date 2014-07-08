@@ -156,36 +156,61 @@ void drawTrajectories()
 /* program & OpenGL initialization */
 void myInitGL(int argc, char *argv[])
 {
-    // initialize the GL library
-   // std::cout << "MyInitGL\n";
+//    // initialize the GL library
+//   // std::cout << "MyInitGL\n";
 // Added in Exercise 8 - End *****************************************************************
-    // pixel storage/packing stuff
+//    // pixel storage/packing stuff
+//    glPixelStorei( GL_PACK_ALIGNMENT,   1 ); // for glReadPixels​
+//    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); // for glTexImage2D​
+//    glPixelZoom( 1.0, -1.0 );
+// Added in Exercise 8 - End *****************************************************************
+
+//    // enable and set colors
+//   // glEnable( GL_COLOR_MATERIAL );
+//    glClearColor( 0, 0, 0, 1.0 );
+
+//    // enable and set depth parameters
+//    glEnable( GL_DEPTH_TEST );
+//    glClearDepth( 1.0 );
+
+//    // light parameters
+//    GLfloat light_pos[] = { 1.0, 1.0, 1.0, 0.0 };
+//    GLfloat light_amb[] = { 0.2, 0.2, 0.2, 1.0 };
+//    GLfloat light_dif[] = { 0.7, 0.7, 0.7, 1.0 };
+
+//    // enable lighting
+//    glLightfv( GL_LIGHT0, GL_POSITION, light_pos );
+//    glLightfv( GL_LIGHT0, GL_AMBIENT,  light_amb );
+//    glLightfv( GL_LIGHT0, GL_DIFFUSE,  light_dif );
+//    glEnable( GL_LIGHTING );
+//    glEnable( GL_LIGHT0 );
+
+//    glDisable(GL_LIGHTING);
+
     glPixelStorei( GL_PACK_ALIGNMENT,   1 ); // for glReadPixels​
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); // for glTexImage2D​
-    glPixelZoom( 1.0, -1.0 );
-// Added in Exercise 8 - End *****************************************************************
+        glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); // for glTexImage2D​
+        glPixelZoom( 1.0, -1.0 );
+    // Added in Exercise 8 - End *****************************************************************
 
-    // enable and set colors
-   // glEnable( GL_COLOR_MATERIAL );
-    glClearColor( 0, 0, 0, 1.0 );
+        // enable and set colors
+        glEnable( GL_COLOR_MATERIAL );
+        glClearColor( 0, 0, 0, 1.0 );
 
-    // enable and set depth parameters
-    glEnable( GL_DEPTH_TEST );
-    glClearDepth( 1.0 );
+        // enable and set depth parameters
+        glEnable( GL_DEPTH_TEST );
+        glClearDepth( 1.0 );
 
-    // light parameters
-    GLfloat light_pos[] = { 1.0, 1.0, 1.0, 0.0 };
-    GLfloat light_amb[] = { 0.2, 0.2, 0.2, 1.0 };
-    GLfloat light_dif[] = { 0.7, 0.7, 0.7, 1.0 };
+        // light parameters
+        GLfloat light_pos[] = { 1.0, 1.0, 1.0, 0.0 };
+        GLfloat light_amb[] = { 0.2, 0.2, 0.2, 1.0 };
+        GLfloat light_dif[] = { 0.7, 0.7, 0.7, 1.0 };
 
-    // enable lighting
-    glLightfv( GL_LIGHT0, GL_POSITION, light_pos );
-    glLightfv( GL_LIGHT0, GL_AMBIENT,  light_amb );
-    glLightfv( GL_LIGHT0, GL_DIFFUSE,  light_dif );
-    glEnable( GL_LIGHTING );
-    glEnable( GL_LIGHT0 );
-
-    glDisable(GL_LIGHTING);
+        // enable lighting
+        glLightfv( GL_LIGHT0, GL_POSITION, light_pos );
+        glLightfv( GL_LIGHT0, GL_AMBIENT,  light_amb );
+        glLightfv( GL_LIGHT0, GL_DIFFUSE,  light_dif );
+        glEnable( GL_LIGHTING );
+        glEnable( GL_LIGHT0 );
 
     markerApos.x = -0.5f; markerApos.y = 0.0f; markerApos.z = 0.0f; markerApos.r = 0; markerApos.g = 1; markerApos.b = 1;
     markerBpos.x =  0.5f; markerBpos.y = 0.0f; markerBpos.z = 0.0f; markerBpos.r = 1; markerBpos.g = 0; markerBpos.b = 1;
@@ -420,6 +445,9 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
 
     // move to marker-position
     glMatrixMode( GL_MODELVIEW );
+
+    glPushMatrix();
+
     glLoadIdentity();
 
     bool markerA_update = false, markerB_update = false, markerC_update = false, markerD_update = false;
@@ -654,6 +682,8 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
     //drawBall
     glLoadIdentity();
     glColor4f(1,0,0,1);
+
+    glPopMatrix();
 
 }
 

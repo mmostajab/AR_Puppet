@@ -17,6 +17,8 @@ add_executable (ARPuppet
   myGL.h
   main.cpp
   MarkerTracker.cpp
+  MarkerTracker_KK.cpp
+  PoseEstimation.cpp
   color.h
   link.h
   myBiped.h
