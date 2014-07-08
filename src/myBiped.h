@@ -9,7 +9,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#define RANDOM_DIVISOR 10000.0
+#define RANDOM_DIVISOR 1000.0
 
 using namespace Eigen;
 
@@ -47,8 +47,8 @@ void initBiped()
 
         ::leftHand.addLink(leftHand);
     }
-    leftHand_targetPoint = leftHand.getPosition();
-    leftHand_targetPoint(1) = -leftHand_targetPoint(1);
+    //leftHand_targetPoint = leftHand.getPosition();
+   //leftHand_targetPoint(1) = -leftHand_targetPoint(1);
     leftHand.moveToPoint(leftHand_targetPoint);
 
     rightHand.setBasePosition(Vector2f(-0.007, -.06));
@@ -67,7 +67,7 @@ void initBiped()
     }
     //rightHand_targetPoint = rightHand.getPosition();
     //rightHand_targetPoint(1) = -rightHand_targetPoint(1);
-    rightHand.moveToPoint(rightHand_targetPoint);
+    rightHand.moveToPoint(leftHand_targetPoint);
 
     leftFoot.setBasePosition(Vector2f(0.0, -0.03));
     for (int i = 1; i <= 2; i++)
@@ -151,6 +151,7 @@ void updateBiped()
   if(leftHand.isTargetResolved())
   {
       leftHand_targetPoint = leftHand.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+      //leftHand_targetPoint = leftHand.getPointWithinRange(-0.0001, -0.0001, -0.0001);
       leftHand.moveToPoint(leftHand_targetPoint);
   }
 
@@ -159,6 +160,7 @@ void updateBiped()
   if(rightHand.isTargetResolved())
   {
       rightHand_targetPoint = rightHand.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+      //rightHand_targetPoint = rightFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
       rightHand.moveToPoint(rightHand_targetPoint);
   }
 
@@ -166,7 +168,8 @@ void updateBiped()
   //leftFoot.update();
   if(leftFoot.isTargetResolved())
   {
-      leftFoot_targetPoint = leftFoot.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+       leftFoot_targetPoint = leftFoot.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+      //leftFoot_targetPoint = leftFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
       leftFoot.moveToPoint(leftFoot_targetPoint);
   }
 
@@ -175,6 +178,7 @@ void updateBiped()
   if(rightFoot.isTargetResolved())
   {
       rightFoot_targetPoint = rightFoot.getPointWithinRange((rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR, (rand() % 200 - 100) / RANDOM_DIVISOR);
+      //rightFoot_targetPoint = rightFoot.getPointWithinRange(-0.0001, -0.0001, -0.0001);
       rightFoot.moveToPoint(rightFoot_targetPoint);
   }
 

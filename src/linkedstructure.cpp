@@ -166,17 +166,17 @@ VectorXf LinkedStructure::getPointWithinRange(float dirX, float dirY, float dirZ
    point(0) = mTargetPosition(0) + dirX;
    point(1) = mTargetPosition(1) + dirY;
 
-//   if(point(0) >= length * 0.5)
-//   {
-//       point(0) = mTargetPosition(0);
-//       point(1) = mTargetPosition(1);
-//   }
+   if(point(0) >= length * 0.5)
+   {
+       point(0) = mTargetPosition(0);
+       point(1) = mTargetPosition(1);
+   }
 
-//   if(point(1) >= length * 0.5)
-//   {
-//       point(0) = mTargetPosition(0);
-//       point(1) = mTargetPosition(1);
-//   }
+   if(point(1) >= length * 0.5)
+   {
+       point(0) = mTargetPosition(0);
+       point(1) = mTargetPosition(1);
+   }
 
    //point(0) = ((rand() % 2 == 0) ? -1 : 1) * (rand() % (int)(length*0.5));
    //point(1) = ((rand() % 2 == 0) ? -1 : 1) * (rand() % (int)(length*0.5));

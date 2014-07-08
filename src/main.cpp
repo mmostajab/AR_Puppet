@@ -323,6 +323,9 @@ int main(int argc, char* argv[])
 	
 	std::vector<Marker> markers;
     std::vector<Marker_KK> markers_KK;
+
+    int updateIter = 0;
+
 //	float resultMatrix[16];
 	/* Loop until the user closes the window */
     while (!glfwWindowShouldClose(combineWindow))
@@ -340,7 +343,7 @@ int main(int argc, char* argv[])
 
 		/* Track a marker */
         markerTracker_KK.findMarker( img_bgr, markers_KK);
-        //markerTracker.findMarker( img_bgr, markers);///resultMatrix);
+        markerTracker.findMarker( img_bgr, markers);///resultMatrix);
 
 		
 		/* Render here */
@@ -358,7 +361,16 @@ int main(int argc, char* argv[])
         //myDisplay(markerPositionWindow, markers);
         //glfwSwapBuffers(markerPositionWindow);
 
-        updateBiped();
+        if(updateIter < 5)
+        {
+
+            updateIter++;
+        }
+        else
+        {
+            updateBiped();
+            updateIter = 0;
+        }
 
 		/* Poll for and process events */
 		glfwPollEvents();

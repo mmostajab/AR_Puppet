@@ -9,7 +9,18 @@
 
 using std::min;
 
-void printMat(const float* mat);
+void printMat(const float* mat)
+{
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            std::cout << mat[i * 4 + j] << " ";
+        }
+
+        std::cout << std::endl;
+    }
+}
 
 float resultMatrix_0B44[16];
 float resultMatrix_0272[16];
@@ -108,6 +119,7 @@ stVec::operator stPos()
 }
 
 stPos markerApos, markerBpos, markerCpos, markerDpos;
+stPos markerAInitPos, markerBInitPos, markerCInitPos, markerDInitPos;
 std::vector<stPos> markerATrajectory, markerBTrajectory;
 
 void drawHandle_Spheres(const stPos& a, const stPos& b)
@@ -156,76 +168,51 @@ void drawTrajectories()
 /* program & OpenGL initialization */
 void myInitGL(int argc, char *argv[])
 {
-//    // initialize the GL library
-//   // std::cout << "MyInitGL\n";
+    // initialize the GL library
+   // std::cout << "MyInitGL\n";
 // Added in Exercise 8 - End *****************************************************************
-//    // pixel storage/packing stuff
-//    glPixelStorei( GL_PACK_ALIGNMENT,   1 ); // for glReadPixels​
-//    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); // for glTexImage2D​
-//    glPixelZoom( 1.0, -1.0 );
-// Added in Exercise 8 - End *****************************************************************
-
-//    // enable and set colors
-//   // glEnable( GL_COLOR_MATERIAL );
-//    glClearColor( 0, 0, 0, 1.0 );
-
-//    // enable and set depth parameters
-//    glEnable( GL_DEPTH_TEST );
-//    glClearDepth( 1.0 );
-
-//    // light parameters
-//    GLfloat light_pos[] = { 1.0, 1.0, 1.0, 0.0 };
-//    GLfloat light_amb[] = { 0.2, 0.2, 0.2, 1.0 };
-//    GLfloat light_dif[] = { 0.7, 0.7, 0.7, 1.0 };
-
-//    // enable lighting
-//    glLightfv( GL_LIGHT0, GL_POSITION, light_pos );
-//    glLightfv( GL_LIGHT0, GL_AMBIENT,  light_amb );
-//    glLightfv( GL_LIGHT0, GL_DIFFUSE,  light_dif );
-//    glEnable( GL_LIGHTING );
-//    glEnable( GL_LIGHT0 );
-
-//    glDisable(GL_LIGHTING);
-
+    // pixel storage/packing stuff
     glPixelStorei( GL_PACK_ALIGNMENT,   1 ); // for glReadPixels​
-        glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); // for glTexImage2D​
-        glPixelZoom( 1.0, -1.0 );
-    // Added in Exercise 8 - End *****************************************************************
+    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ); // for glTexImage2D​
+    glPixelZoom( 1.0, -1.0 );
+// Added in Exercise 8 - End *****************************************************************
 
-        // enable and set colors
-        glEnable( GL_COLOR_MATERIAL );
-        glClearColor( 0, 0, 0, 1.0 );
+    // enable and set colors
+   // glEnable( GL_COLOR_MATERIAL );
+    glClearColor( 0, 0, 0, 1.0 );
 
-        // enable and set depth parameters
-        glEnable( GL_DEPTH_TEST );
-        glClearDepth( 1.0 );
+    // enable and set depth parameters
+    glEnable( GL_DEPTH_TEST );
+    glClearDepth( 1.0 );
 
-        // light parameters
-        GLfloat light_pos[] = { 1.0, 1.0, 1.0, 0.0 };
-        GLfloat light_amb[] = { 0.2, 0.2, 0.2, 1.0 };
-        GLfloat light_dif[] = { 0.7, 0.7, 0.7, 1.0 };
+    // light parameters
+    GLfloat light_pos[] = { 1.0, 1.0, 1.0, 0.0 };
+    GLfloat light_amb[] = { 0.2, 0.2, 0.2, 1.0 };
+    GLfloat light_dif[] = { 0.7, 0.7, 0.7, 1.0 };
 
-        // enable lighting
-        glLightfv( GL_LIGHT0, GL_POSITION, light_pos );
-        glLightfv( GL_LIGHT0, GL_AMBIENT,  light_amb );
-        glLightfv( GL_LIGHT0, GL_DIFFUSE,  light_dif );
-        glEnable( GL_LIGHTING );
-        glEnable( GL_LIGHT0 );
+    // enable lighting
+    glLightfv( GL_LIGHT0, GL_POSITION, light_pos );
+    glLightfv( GL_LIGHT0, GL_AMBIENT,  light_amb );
+    glLightfv( GL_LIGHT0, GL_DIFFUSE,  light_dif );
+    glEnable( GL_LIGHTING );
+    glEnable( GL_LIGHT0 );
 
-    markerApos.x = -0.5f; markerApos.y = 0.0f; markerApos.z = 0.0f; markerApos.r = 0; markerApos.g = 1; markerApos.b = 1;
-    markerBpos.x =  0.5f; markerBpos.y = 0.0f; markerBpos.z = 0.0f; markerBpos.r = 1; markerBpos.g = 0; markerBpos.b = 1;
+    glDisable(GL_LIGHTING);
 
-    markerCpos.x = 0.0f; markerCpos.y = 0.0f; markerCpos.z = -0.5f; markerCpos.r = 0; markerCpos.g = 1; markerCpos.b = 0;
-    markerDpos.x = 0.0f; markerDpos.y = 0.0f; markerDpos.z = 0.5f; markerDpos.r = 1; markerDpos.g = 0; markerDpos.b = 0;
+    markerApos.x = markerAInitPos.x = -0.5f; markerApos.y = markerAInitPos.y = 0.0f; markerApos.z = markerAInitPos.z = 0.0f; markerApos.r = 0; markerApos.g = 1; markerApos.b = 1;
+    markerBpos.x = markerBInitPos.x =  0.5f; markerBpos.y = markerBInitPos.y = 0.0f; markerBpos.z = markerBInitPos.z = 0.0f; markerBpos.r = 1; markerBpos.g = 0; markerBpos.b = 1;
+
+    markerCpos.x = markerCInitPos.x = 0.0f; markerCpos.y = markerCInitPos.y = 0.0f; markerCpos.z = markerCInitPos.z = -0.5f; markerCpos.r = 0; markerCpos.g = 1; markerCpos.b = 0;
+    markerDpos.x = markerDInitPos.x = 0.0f; markerDpos.y = markerDInitPos.y = 0.0f; markerDpos.z = markerDInitPos.z =  0.5f; markerDpos.r = 1; markerDpos.g = 0; markerDpos.b = 0;
 }
 
-void update(float* transform, stPos& pos)
+void update(float* transform, stPos initPos, stPos& pos)
 {
     stPos nextPos;
 
-    nextPos.x = transform[0] * pos.x + transform[1] * pos.y + transform[2] * pos.z + transform[3];
-    nextPos.y = transform[4] * pos.x + transform[5] * pos.y + transform[6] * pos.z + transform[7];
-    nextPos.z = transform[8] * pos.x + transform[9] * pos.y + transform[10] * pos.z + transform[11];
+    nextPos.x = transform[0] * initPos.x + transform[1] * initPos.y + transform[2] * initPos.z + transform[3];
+    nextPos.y = transform[4] * initPos.x + transform[5] * initPos.y + transform[6] * initPos.z + transform[7];
+    nextPos.z = transform[8] * initPos.x + transform[9] * initPos.y + transform[10] * initPos.z + transform[11];
 
     stVec mov;
     mov.x = nextPos.x - pos.x;
@@ -235,186 +222,14 @@ void update(float* transform, stPos& pos)
     float movLen = mov.x * mov.x + mov.y * mov.y + mov.z * mov.z;
 
     if(movLen > 1)
+    {
+        std::cout << "transform is not accepted\n\n";
         return;
+    }
 
     pos.x += mov.x / 100;
     pos.y += mov.y / 100;
     pos.z += mov.z / 100;
-}
-
-void update(const stVec& markerATranslation, const stVec& markerBTranslation, const stVec& markerCTranslation, const stVec& markerDTranslation)
-{
-    bool updateA = false, updateB = false, updateC = false, updateD = false;
-
-    markerApos.x += markerATranslation.x;    markerApos.y += markerATranslation.y;    markerApos.z += markerATranslation.z;
-    markerBpos.x += markerBTranslation.x;    markerBpos.y += markerBTranslation.y;    markerBpos.z += markerBTranslation.z;
-    markerCpos.x += markerCTranslation.x;    markerCpos.y += markerCTranslation.y;    markerCpos.z += markerCTranslation.z;
-    markerDpos.x += markerDTranslation.x;    markerDpos.y += markerDTranslation.y;    markerDpos.z += markerDTranslation.z;
-
-     /*if(markerATranslation.nonZero() && markerBTranslation.nonZero())
-    {
-        stVec translationAB;
-        translationAB.x = markerATranslation.x - markerBTranslation.x;
-        translationAB.y = markerATranslation.y - markerBTranslation.y;
-        translationAB.z = markerATranslation.z - markerBTranslation.z;
-
-        markerApos.x += min(markerATranslation.x, markerBTranslation.x) + abs(translationAB.x);
-
-        markerApos.z += min(markerATranslation.z, markerBTranslation.z) + abs(translationAB.z);
-
-        if(markerATranslation.x > 0)
-        {
-            markerApos.x += min(markerATranslation.x, markerBTranslation.x) + abs(translationAB.x);
-            markerBpos.x -= min(markerATranslation.x, markerBTranslation.x) + abs(translationAB.x);
-        }
-        else
-        {
-            markerApos.x -= min(markerATranslation.x, markerBTranslation.x) + abs(translationAB.x);
-            markerBpos.x += min(markerATranslation.x, markerBTranslation.x) + abs(translationAB.x);
-        }
-
-        if(markerATranslation.y > 0)
-        {
-            markerApos.y += min(markerATranslation.y, markerBTranslation.y) + abs(translationAB.y);
-            markerBpos.y -= min(markerATranslation.y, markerBTranslation.y) + abs(translationAB.y);
-        }
-        else
-        {
-            markerApos.y -= min(markerATranslation.y, markerBTranslation.y) + abs(translationAB.y);
-            markerBpos.y += min(markerATranslation.y, markerBTranslation.y) + abs(translationAB.y);
-        }
-
-        if(markerATranslation.z > 0)
-        {
-            markerApos.z += min(markerATranslation.z, markerBTranslation.z) + abs(translationAB.z);
-            markerBpos.z -= min(markerATranslation.z, markerBTranslation.z) + abs(translationAB.z);
-        }
-        else
-        {
-            markerApos.z -= min(markerATranslation.z, markerBTranslation.z) + abs(translationAB.z);
-            markerBpos.z += min(markerATranslation.z, markerBTranslation.z) + abs(translationAB.z);
-        }
-
-        updateA = true;
-        updateB = true;
-    }
-
-    if(markerCTranslation.nonZero() && markerDTranslation.nonZero())
-    {
-        stVec translationAB;
-        translationAB.x = markerCTranslation.x - markerDTranslation.x;
-        translationAB.y = markerCTranslation.y - markerDTranslation.y;
-        translationAB.z = markerCTranslation.z - markerDTranslation.z;
-
-        markerCpos.x += min(markerCTranslation.x, markerDTranslation.x) + abs(translationAB.x);
-
-        markerCpos.z += min(markerCTranslation.z, markerDTranslation.z) + abs(translationAB.z);
-
-        if(markerCTranslation.x > 0)
-        {
-            markerCpos.x += min(markerCTranslation.x, markerDTranslation.x) + abs(translationAB.x);
-            markerDpos.x -= min(markerCTranslation.x, markerDTranslation.x) + abs(translationAB.x);
-        }
-        else
-        {
-            markerCpos.x -= min(markerCTranslation.x, markerDTranslation.x) + abs(translationAB.x);
-            markerDpos.x += min(markerCTranslation.x, markerDTranslation.x) + abs(translationAB.x);
-        }
-
-        if(markerCTranslation.y > 0)
-        {
-            markerCpos.y += min(markerCTranslation.y, markerDTranslation.y) + abs(translationAB.y);
-            markerDpos.y -= min(markerCTranslation.y, markerDTranslation.y) + abs(translationAB.y);
-        }
-        else
-        {
-            markerCpos.y -= min(markerCTranslation.y, markerDTranslation.y) + abs(translationAB.y);
-            markerDpos.y += min(markerCTranslation.y, markerDTranslation.y) + abs(translationAB.y);
-        }
-
-        if(markerCTranslation.z > 0)
-        {
-            markerCpos.z += min(markerCTranslation.z, markerDTranslation.z) + abs(translationAB.z);
-            markerDpos.z -= min(markerCTranslation.z, markerDTranslation.z) + abs(translationAB.z);
-        }
-        else
-        {
-            markerCpos.z -= min(markerCTranslation.z, markerDTranslation.z) + abs(translationAB.z);
-            markerDpos.z += min(markerCTranslation.z, markerDTranslation.z) + abs(translationAB.z);
-        }
-
-        updateA = true;
-        updateB = true;
-    }
-
-    if(updateA && updateB && updateC && updateD)
-        return;
-
-    if(!updateA && !updateB)
-    {
-        if(markerATranslation.nonZero())
-        {
-            markerApos.x += markerATranslation.x;
-            markerApos.y += markerATranslation.y;
-            markerApos.z += markerATranslation.z;
-
-            markerBpos.x -= markerATranslation.x;
-            markerBpos.y -= markerATranslation.y;
-            markerBpos.z -= markerATranslation.z;
-
-        }
-        else if(markerBTranslation.nonZero())
-        {
-            markerBpos.x += markerBTranslation.x;
-            markerBpos.y += markerBTranslation.y;
-            markerBpos.z += markerBTranslation.z;
-
-            markerApos.x -= markerBTranslation.x;
-            markerApos.y -= markerBTranslation.y;
-            markerApos.z -= markerBTranslation.z;
-        }
-
-        updateA = true;
-        updateB = true;
-    }
-
-    if(!updateC && !updateD)
-    {
-        if(markerCTranslation.nonZero())
-        {
-            markerCpos.x += markerCTranslation.x;
-            markerCpos.y += markerCTranslation.y;
-            markerCpos.z += markerCTranslation.z;
-
-            markerDpos.x -= markerCTranslation.x;
-            markerDpos.y -= markerCTranslation.y;
-            markerDpos.z -= markerCTranslation.z;
-
-        }
-        else if(markerDTranslation.nonZero())
-        {
-            markerDpos.x += markerDTranslation.x;
-            markerDpos.y += markerDTranslation.y;
-            markerDpos.z += markerDTranslation.z;
-
-            markerCpos.x -= markerDTranslation.x;
-            markerCpos.y -= markerDTranslation.y;
-            markerCpos.z -= markerDTranslation.z;
-        }
-    }*/
-}
-
-void printMat(const float* mat)
-{
-    for(int i = 0; i < 4; i++)
-    {
-        for(int j = 0; j < 4; j++)
-        {
-            std::cout << mat[i * 4 + j] << " ";
-        }
-
-        std::cout << '\n';
-    }
 }
 
 void setIdentity(float* mat)
@@ -445,17 +260,14 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
 
     // move to marker-position
     glMatrixMode( GL_MODELVIEW );
-
-    glPushMatrix();
-
     glLoadIdentity();
 
     bool markerA_update = false, markerB_update = false, markerC_update = false, markerD_update = false;
 
-    setIdentity(resultMatrix_0B44);
-    setIdentity(resultMatrix_1228);
-    setIdentity(resultMatrix_1C44);
-    setIdentity(resultMatrix_0272);
+    //setIdentity(resultMatrix_0B44);
+    //setIdentity(resultMatrix_1228);
+    //setIdentity(resultMatrix_1C44);
+    //setIdentity(resultMatrix_0272);
 
     for(int i=0; i<markers.size(); i++){
         const int code =markers[i].code;
@@ -485,108 +297,267 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
     //if(markerA_Translate.x < 0 && markerA_Translate.y < 0)
         //std::cout << "the translation is negative!!!\n";
 
+    std::cout << "Marker A Prev: " << markerApos.x << " " << markerApos.y << " " << markerApos.z << std::endl;
+    std::cout << "Marker B Prev: " << markerBpos.x << " " << markerBpos.y << " " << markerBpos.z << std::endl;
+    std::cout << "Marker C Prev: " << markerCpos.x << " " << markerCpos.y << " " << markerCpos.z << std::endl;
+    std::cout << "Marker D Prev: " << markerDpos.x << " " << markerDpos.y << " " << markerDpos.z << std::endl;
+
+
+    std::cout << "Mat A: \n";
+    printMat(resultMatrix_0B44);
+    std::cout << std::endl << std::endl;
+
+    std::cout << "Mat B: \n";
+    printMat(resultMatrix_1228);
+    std::cout << std::endl << std::endl;
+
+    std::cout << "Mat C: \n";
+    printMat(resultMatrix_1C44);
+    std::cout << std::endl << std::endl;
+
+    std::cout << "Mat D: \n";
+    printMat(resultMatrix_0272);
+    std::cout << std::endl << std::endl;
+
     if(markerA_update || markerB_update)
     {
         if(markerA_update && markerB_update)
         {
-            stPos prevMarkerApos = markerApos, prevMarkerBpos = markerBpos;
+            update(resultMatrix_1228, markerAInitPos, markerApos);
+            update(resultMatrix_0B44, markerBInitPos, markerBpos);
 
-            update(resultMatrix_0B44, markerApos);
-            update(resultMatrix_1228, markerBpos);
+            stVec dif;
+            dif.x = markerApos.x + markerBpos.x;
+            dif.y = markerApos.y + markerBpos.y;
+            dif.z = markerApos.z + markerBpos.z;
 
-            stPos newPosMarkerA;
+            markerApos.x += dif.x / 2;
+            markerApos.y += dif.y / 2;
+            markerApos.z += dif.z / 2;
 
-            newPosMarkerA.x = markerApos.x - markerBpos.x;
-            newPosMarkerA.y = markerApos.y - markerBpos.y;
-            newPosMarkerA.z = markerApos.z - markerBpos.z;
+            //markerBpos.x -= dif.x / 2;
+            //markerBpos.y -= dif.y / 2;
+            //markerBpos.z -= dif.z / 2;
 
-            float newPosLength = newPosMarkerA.len2();
+            float r, g, b;
 
-            if(newPosLength > 0.01)
+            r = markerApos.r;
+            g = markerApos.g;
+            b = markerApos.b;
+
+            if(markerApos.len2() > 0.1)
             {
-
-                stPos colors;
-                colors.x = markerApos.r;
-                colors.y = markerApos.g;
-                colors.z = markerApos.b;
-                colors.r = markerBpos.r;
-                colors.g = markerBpos.g;
-                colors.b = markerBpos.b;
-
-                markerApos = stPos(stVec(newPosMarkerA).normalize() *  0.5f);
-                markerBpos = stPos(stVec(newPosMarkerA).normalize() * -0.5f);
-
-                markerApos.r = colors.x;    markerBpos.r = colors.r;
-                markerApos.g = colors.y;    markerBpos.g = colors.g;
-                markerApos.b = colors.z;    markerBpos.b = colors.b;
-            }
-            else
-            {
-                markerApos = prevMarkerApos;
-                markerBpos = prevMarkerBpos;
+                markerApos = stVec(markerApos).normalize() * 0.5;
             }
 
+            markerApos.r = r;
+            markerApos.g = g;
+            markerApos.b = b;
+
+            markerBpos.x = -markerApos.x;
+            markerBpos.y = -markerApos.y;
+            markerBpos.z = -markerApos.z;
+//            r = markerBpos.r;
+//            g = markerBpos.g;
+//            b = markerBpos.b;
+
+//            if(markerBpos.len2() > 0.1)
+//            {
+//                markerBpos = stVec(markerBpos).normalize() * 0.5;
+//            }
+
+//            markerBpos.r = r;
+//            markerBpos.g = g;
+//            markerBpos.b = b;
         }
-        else if(markerA_update && !markerB_update)
+        else if(markerA_update)
         {
-            stPos prevMarkerApos = markerApos;
-            update(resultMatrix_0B44, markerApos);
+            update(resultMatrix_1228, markerAInitPos, markerApos);
 
-            float posLen = markerApos.len2();
-            if(posLen > 0.01)
+            float r, g, b;
+
+            r = markerApos.r;
+            g = markerApos.g;
+            b = markerApos.b;
+
+            if(markerApos.len2() > 0.1)
             {
-                stPos colors;
-                colors.x = markerApos.r;
-                colors.y = markerApos.g;
-                colors.z = markerApos.b;
-                colors.r = markerBpos.r;
-                colors.g = markerBpos.g;
-                colors.b = markerBpos.b;
-
-                markerApos = stPos(stVec(markerApos).normalize() *  0.5f);
-                markerBpos = stPos(stVec(markerApos).normalize() * -0.5f);
-
-                markerApos.r = colors.x;    markerBpos.r = colors.r;
-                markerApos.g = colors.y;    markerBpos.g = colors.g;
-                markerApos.b = colors.z;    markerBpos.b = colors.b;
+                markerApos = stVec(markerApos).normalize() * 0.5;
             }
-            else
-            {
-                markerApos = prevMarkerApos;
-            }
+
+            markerApos.r = r;
+            markerApos.g = g;
+            markerApos.b = b;
+
+            markerBpos.x = -markerApos.x;
+            markerBpos.y = -markerApos.y;
+            markerBpos.z = -markerApos.z;
+
         }
-        else if(!markerA_update && markerB_update)
+        else if(markerB_update)
         {
-            stPos prevMarkerBpos = markerBpos;
-            update(resultMatrix_0B44, markerBpos);
+            update(resultMatrix_0B44, markerBInitPos, markerBpos);
 
-            float posLen = markerBpos.len2();
-            if(posLen > 0.01)
+            float r, g, b;
+
+            r = markerBpos.r;
+            g = markerBpos.g;
+            b = markerBpos.b;
+
+            if(markerBpos.len2() > 0.1)
             {
-                stPos colors;
-                colors.x = markerApos.r;
-                colors.y = markerApos.g;
-                colors.z = markerApos.b;
-                colors.r = markerBpos.r;
-                colors.g = markerBpos.g;
-                colors.b = markerBpos.b;
-
-                markerBpos = stPos(stVec(markerBpos).normalize() *  0.5f);
-                markerApos = stPos(stVec(markerBpos).normalize() * -0.5f);
-
-                markerApos.r = colors.x;    markerBpos.r = colors.r;
-                markerApos.g = colors.y;    markerBpos.g = colors.g;
-                markerApos.b = colors.z;    markerBpos.b = colors.b;
+                markerBpos = stVec(markerBpos).normalize() * 0.5;
             }
-            else
-            {
-                markerBpos = prevMarkerBpos;
-            }
+
+            markerBpos.r = r;
+            markerBpos.g = g;
+            markerBpos.b = b;
+
+            markerApos.x = -markerBpos.x;
+            markerApos.y = -markerBpos.y;
+            markerApos.z = -markerBpos.z;
         }
+        
+//        if(markerA_update && markerB_update)
+//        {
+//            std::cout << "marker A & B are updated!" << std::endl;
+
+//            stPos prevMarkerApos = markerApos, prevMarkerBpos = markerBpos;
+
+//            update(resultMatrix_0B44, markerAInitPos, markerApos);
+//            //update(resultMatrix_0B44, markerApos, markerApos);
+//            update(resultMatrix_1228, markerBInitPos, markerBpos);
+//            //update(resultMatrix_1228, markerBpos, markerBpos);
+
+//            stPos newPosMarkerA;
+
+//            newPosMarkerA.x = markerApos.x - markerBpos.x;
+//            newPosMarkerA.y = markerApos.y - markerBpos.y;
+//            newPosMarkerA.z = markerApos.z - markerBpos.z;
+
+//            float newPosLength = newPosMarkerA.len2();
+
+//            if(newPosLength > 0.01)
+//            {
+
+//                stPos colors;
+//                colors.x = markerApos.r;
+//                colors.y = markerApos.g;
+//                colors.z = markerApos.b;
+//                colors.r = markerBpos.r;
+//                colors.g = markerBpos.g;
+//                colors.b = markerBpos.b;
+
+//                markerApos = stPos(stVec(newPosMarkerA).normalize() *  0.5f);
+//                markerBpos = stPos(stVec(newPosMarkerA).normalize() * -0.5f);
+
+//                markerApos.r = colors.x;    markerBpos.r = colors.r;
+//                markerApos.g = colors.y;    markerBpos.g = colors.g;
+//                markerApos.b = colors.z;    markerBpos.b = colors.b;
+//            }
+//            else
+//            {
+//                markerApos = prevMarkerApos;
+//                markerBpos = prevMarkerBpos;
+//            }
+
+//        }
+//        else if(markerA_update && !markerB_update)
+//        {
+//            stPos prevMarkerApos = markerApos;
+//            update(resultMatrix_0B44, markerAInitPos, markerApos);
+//            //update(resultMatrix_0B44, markerApos, markerApos);
+
+//            float posLen = markerApos.len2();
+//            if(posLen > 0.01)
+//            {
+//                stPos colors;
+//                colors.x = markerApos.r;
+//                colors.y = markerApos.g;
+//                colors.z = markerApos.b;
+//                colors.r = markerBpos.r;
+//                colors.g = markerBpos.g;
+//                colors.b = markerBpos.b;
+
+//                markerApos = stPos(stVec(markerApos).normalize() *  0.5f);
+//                markerBpos = stPos(stVec(markerApos).normalize() * -0.5f);
+
+//                markerApos.r = colors.x;    markerBpos.r = colors.r;
+//                markerApos.g = colors.y;    markerBpos.g = colors.g;
+//                markerApos.b = colors.z;    markerBpos.b = colors.b;
+//            }
+//            else
+//            {
+//                markerApos = prevMarkerApos;
+//            }
+//        }
+//        else if(!markerA_update && markerB_update)
+//        {
+//            stPos prevMarkerBpos = markerBpos;
+//            //update(resultMatrix_1228, markerBInitPos, markerBpos);
+//            update(resultMatrix_1228, markerBpos, markerBpos);
+
+//            float posLen = markerBpos.len2();
+//            if(posLen > 0.01)
+//            {
+//                stPos colors;
+//                colors.x = markerApos.r;
+//                colors.y = markerApos.g;
+//                colors.z = markerApos.b;
+//                colors.r = markerBpos.r;
+//                colors.g = markerBpos.g;
+//                colors.b = markerBpos.b;
+
+//                markerBpos = stPos(stVec(markerBpos).normalize() *  0.5f);
+//                markerApos = stPos(stVec(markerBpos).normalize() * -0.5f);
+
+//                markerApos.r = colors.x;    markerBpos.r = colors.r;
+//                markerApos.g = colors.y;    markerBpos.g = colors.g;
+//                markerApos.b = colors.z;    markerBpos.b = colors.b;
+//            }
+//            else
+//            {
+//                markerBpos = prevMarkerBpos;
+//            }
+//        }
 
         markerATrajectory.push_back(markerApos);
         markerBTrajectory.push_back(markerBpos);
     }
+
+    if(markerC_update || markerD_update)
+    {
+        if(markerC_update && markerD_update)
+        {
+            update(resultMatrix_1C44, markerCInitPos, markerCpos);
+            update(resultMatrix_0272, markerDInitPos, markerDpos);
+        }
+        else if(markerC_update)
+        {
+            update(resultMatrix_1C44, markerCInitPos, markerCpos);
+
+
+
+            markerDpos.x = -markerCpos.x;
+            markerDpos.y = -markerCpos.y;
+            markerDpos.z = -markerCpos.z;
+
+        }
+        else if(markerD_update)
+        {
+            update(resultMatrix_0272, markerDInitPos, markerDpos);
+
+            markerCpos.x = -markerDpos.x;
+            markerCpos.y = -markerDpos.y;
+            markerCpos.z = -markerDpos.z;
+        }
+    }
+
+//    if(markerC_update || markerD_update)
+//    {
+//        update(resultMatrix_1C44, markerCInitPos, markerCpos);
+//        update(resultMatrix_0272, markerDInitPos, markerDpos);
+//    }
 
     std::cout << "Marker Positions = \n";
     std::cout << "Marker A: " << markerApos.x << " " << markerApos.y << " " << markerApos.z << std::endl;
@@ -614,7 +585,7 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
     glTranslated(0, 0, 0);
     gluSphere(quad, 0.03, 100, 100);
 
-    drawTrajectories();
+    //drawTrajectories();
     drawHandle_Spheres(markerApos, markerBpos);
     drawHandle_Spheres(markerCpos, markerDpos);
 
@@ -682,8 +653,6 @@ void myDisplay( GLFWwindow* window, std::vector<Marker> &markers )
     //drawBall
     glLoadIdentity();
     glColor4f(1,0,0,1);
-
-    glPopMatrix();
 
 }
 
